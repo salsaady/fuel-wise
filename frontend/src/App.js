@@ -10,6 +10,7 @@ function App() {
   const [distance, setDistance] = useState(null)
   const [gasPrice, setGasPrice] = useState(null)
   const [fuelConsumption, setFuelConsumption] = useState(null)
+  //const [formValues, setFormValues] = useState({})
 
   // Dummy data for user and restaurant locations
   const userLocation = { lat: '45.4215', lng: '-75.6972' }; // Example user location
@@ -65,38 +66,11 @@ function App() {
         {/* Button to calculate the distance */}
         <button onClick= {handleGetDistance}>Calculate Distance</button>
         <button onClick = {fetchGasPrice}>Get Gas Price</button>
-        <form onSubmit={handleFuelConsumption}>
-        <div className="input-group">
-          <label htmlFor="year">Year</label>
-          <input
-            type="number"
-            id="year"
-            value={formValues.year || ""}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="input-group">
-          <label htmlFor="make">Make</label>
-          <input
-            type="text"
-            id="make"
-            value={formValues.make || ""}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="input-group">
-          <label htmlFor="model">Model</label>
-          <input
-            type="text"
-            id="model"
-            value={formValues.model || ""}
-            onChange={handleChange}
-          />
-        </div>
-        <button type="submit" className="submit-btn">
-          Submit
-        </button>
-      </form>
+        <CarForm
+          formValues = {formValues}
+          handleChange={handleChange}
+          handleFuelConsumption={handleFuelConsumption}
+        ></CarForm>
         {/* Display the calculated distance */}
         {distance && <p>Distance: {distance} km</p>}
         {gasPrice && <p>Gas Price: {gasPrice} </p>}
