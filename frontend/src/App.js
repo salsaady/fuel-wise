@@ -91,7 +91,7 @@ function App() {
         {userLocation && <p>My Location: {userLocation.latitude} {userLocation.longitude}</p>}
         {distance && <p>Distance: {distance} km</p>}
         {gasPrice && <p>Gas Price: {gasPrice} </p>}
-        {<p>Fuel Consumption: {fuelConsumption}</p>}
+        {fuelConsumption && <p>Fuel Consumption: {fuelConsumption}</p>}
       </header>
       
     </div>
