@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './App.css';
 import CarForm from './components/CarForm';  // Importing the CarForm component
-import DisplayResults from './components/DisplayResults';  // Importing DisplayResults component
-
 
 function App() {
   // State to hold the calculated distance
@@ -62,8 +60,6 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Test Distance Calculation</h1>
-
-        {/* Button to calculate the distance */}
         <button onClick= {handleGetDistance}>Calculate Distance</button>
         <button onClick = {fetchGasPrice}>Get Gas Price</button>
         <CarForm
@@ -71,7 +67,6 @@ function App() {
           handleChange={handleChange}
           handleFuelConsumption={handleFuelConsumption}
         ></CarForm>
-        {/* Display the calculated distance */}
         {distance && <p>Distance: {distance} km</p>}
         {gasPrice && <p>Gas Price: {gasPrice} </p>}
         {<p>Fuel Consumption: {fuelConsumption}</p>}
