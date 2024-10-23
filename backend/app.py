@@ -4,9 +4,11 @@ from flask_cors import CORS
 import googlemaps
 import requests
 import xml.etree.ElementTree as ET
+from flask_cors import cross_origin
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS to allow requests from React
+#CORS(app)  # Enable CORS to allow requests from React
+CORS(app, origins=["http://localhost:3000"])
 
 API_KEY = 'AIzaSyDE6Z6t0y_yj248Tq-o4RsBqAdTrIzl8Mc'
 
@@ -17,10 +19,10 @@ other_address = 'Ottawa, ON'
 response = map_client.distance_matrix(work_place_address, other_address)
 response = map_client.geocode(work_place_address)
 
-
 ### Returns distance between the two locations, the user's location
 # and the restaurant locaton ###
 @app.route('/get_distance', methods=['POST'])
+@cross_origin()  # Enable CORS for this specific route
 def get_distance():
     data = request.json
     user_location = data.get('user_location')
@@ -40,36 +42,55 @@ def get_distance():
             return jsonify({'error': 'Unable to calculate distance'}), 400
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
 
-### This route returns the  ###
-@app.route('/get_fuel_consumption', methods=['GET'])
+@app.route('/get_fuel_consumption', methods=['POST'])
 def get_fuel_consumption():
-    data = request.json
+    data = request.get_json()
     car_year = data.get('year')
     car_make = data.get('make')
-    car_mode = data.get('model')
-    
-    # Step 1: Get the vehicle options (includes vehicle ID)
+    car_model = data.get('model')
+
+    # Get the vehicle options (includes vehicle ID)
     vehicle_options_url = f"https://www.fueleconomy.gov/ws/rest/vehicle/menu/options?year={car_year}&make={car_make}&model={car_model}"
-    options_response = requests.get(vehicle_options_url)    
+    options_response = requests.get(vehicle_options_url)
+
+    # Print the status code and content for debugging
+    print(f"Status Code: {options_response.status_code}")
+    print(f"Response Content: {options_response.content}")  # Inspect the XML response
+
     if options_response.status_code != 200:
         return jsonify({'error': 'Failed to get vehicle options'}), 400
-    
-    # Step 2: Parse the XML response to get the vehicle ID
-    options_root = ET.fromstring(options_response.content)
-    vehicle_id = options_root.find('menuItem/value').text  # Get the first vehicle ID (assuming the first option is relevant)
-    
-    # Step 3: Use the vehicle ID to get fuel consumption
+
+    # Ensure response content is not empty before parsing
+    if not options_response.content:
+        return jsonify({'error': 'Empty response from API'}), 400
+
+    #  Parse the XML response to get the vehicle ID
+    try:
+        options_root = ET.fromstring(options_response.content)
+        vehicle_id_element = options_root.find('.//value')  # Adjust based on actual XML structure
+
+        if vehicle_id_element is None:
+            print("Vehicle ID not found in the XML response")
+            return jsonify({'error': 'Vehicle ID not found in the XML response'}), 400
+
+        vehicle_id = vehicle_id_element.text  # Get the vehicle ID
+    except ET.ParseError as e:
+        print(f"Error parsing XML: {e}")
+        return jsonify({'error': 'Error parsing XML response'}), 400
+
+    # Step 4: Use the vehicle ID to get fuel consumption (continue as before)
     vehicle_data_url = f"https://www.fueleconomy.gov/ws/rest/vehicle/{vehicle_id}"
     vehicle_data_response = requests.get(vehicle_data_url)
+
     if vehicle_data_response.status_code != 200:
         return jsonify({'error': 'Failed to get vehicle data'}), 400
 
-    # Step 4: Parse the XML to extract fuel consumption
     data_root = ET.fromstring(vehicle_data_response.content)
-    fuel_consumption = data_root.find('comb08').text # Get combined MPG
+    fuel_consumption = data_root.find('comb08').text
 
-    return jsonify({'fuel_consumption_mpg': fuel_consumption}), 200
+    return jsonify({'fuel_consumption': fuel_consumption}), 200
 
 ### This is a GET route that returns mock gas price data. ###
 @app.route('/get_gas_price', methods=['GET'])
