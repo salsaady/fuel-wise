@@ -8,17 +8,37 @@ function App() {
   const [distance, setDistance] = useState(null)
   const [gasPrice, setGasPrice] = useState(null)
   const [fuelConsumption, setFuelConsumption] = useState(null)
+  const [userLocation, setUserLocation] = useState(null)
   //const [formValues, setFormValues] = useState({})
 
   // Dummy data for user and restaurant locations
-  const userLocation = { lat: '45.4215', lng: '-75.6972' }; // Example user location
-  const restaurantLocation = { lat: '45.425', lng: '-75.699' } // Example restaurant location
+  //const userLocation = { lat: '45.4215', lng: '-75.6972' }; // Example user location
+  const restaurantLocation = { lat: '45.287798', lng: '-75.672958' } // Example restaurant location
+
+  const getUserLocation = async() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
+    } else {
+      console.log("Geolocation is not supported by this browser.");
+    }
+    
+    function successFunction(position) {
+      const latitude = position.coords.latitude
+      const longitude = position.coords.longitude
+      console.log(position);
+      setUserLocation({latitude, longitude})
+    }
+    
+    function errorFunction() {
+      console.log("Unable to retrieve your location.");
+    }
+  }
 
   // Function to handle distance calculation
   const handleGetDistance = async () => {
     try {
       const response = await axios.post('http://127.0.0.1:5000/get_distance', {
-        user_location: `${userLocation.lat},${userLocation.lng}`,
+        user_location: `${userLocation.latitude},${userLocation.longitude}`,
         restaurant_location: `${restaurantLocation.lat},${restaurantLocation.lng}`
       });
       setDistance(response.data.distance_km);
@@ -60,6 +80,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Test Distance Calculation</h1>
+        <button onClick = {getUserLocation}>Get my location</button>
         <button onClick= {handleGetDistance}>Calculate Distance</button>
         <button onClick = {fetchGasPrice}>Get Gas Price</button>
         <CarForm
@@ -67,6 +88,7 @@ function App() {
           handleChange={handleChange}
           handleFuelConsumption={handleFuelConsumption}
         ></CarForm>
+        {userLocation && <p>My Location: {userLocation.latitude} {userLocation.longitude}</p>}
         {distance && <p>Distance: {distance} km</p>}
         {gasPrice && <p>Gas Price: {gasPrice} </p>}
         {<p>Fuel Consumption: {fuelConsumption}</p>}
