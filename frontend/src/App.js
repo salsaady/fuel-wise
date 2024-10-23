@@ -33,26 +33,21 @@ function App() {
       console.error("Error getting gas price", error);
     }
     }
-    const handleFuelConsumption = async (e) => {
-      e.preventDefault();
-    
-      try {
-        const response = await axios.post('http://127.0.0.1:5000/get_fuel_consumption', {
-          year: formValues.year,
-          make: formValues.make,
-          model: formValues.model
-        }, {
-          headers: {
-            'Content-Type': 'application/json'  // Ensure JSON content-type is set
-          }
-        });
-    
-        // Set the fuel consumption from the response
-        setFuelConsumption(response.data.fuel_consumption);
-      } catch (error) {
-        console.error("Error getting fuel consumption:", error);
-      }
-    };
+  const handleFuelConsumption = async (e) => {
+    e.preventDefault();
+  
+    try {
+      const response = await axios.post('http://127.0.0.1:5000/get_fuel_consumption', {
+        year: formValues.year,
+        make: formValues.make,
+        model: formValues.model
+      });
+      // Set the fuel consumption from the response
+      setFuelConsumption(response.data.fuel_consumption);
+    } catch (error) {
+      console.error("Error getting fuel consumption:", error);
+    }
+  }
     
 
   const [formValues, setFormValues] = useState({});
