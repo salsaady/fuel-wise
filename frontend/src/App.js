@@ -66,7 +66,6 @@ function App() {
         {/* Button to calculate the distance */}
         <button onClick= {handleGetDistance}>Calculate Distance</button>
         <button onClick = {fetchGasPrice}>Get Gas Price</button>
-        <button onClick = {handleFuelConsumption}>Get Gas Price</button>
         <form onSubmit={handleFuelConsumption}>
         <div className="input-group">
           <label htmlFor="year">Year</label>
