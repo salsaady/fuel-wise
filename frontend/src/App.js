@@ -9,6 +9,7 @@ function App() {
   const [gasPrice, setGasPrice] = useState(null)
   const [fuelConsumption, setFuelConsumption] = useState(null)
   const [userLocation, setUserLocation] = useState(null)
+  const [postalCode, setPostalCode] = useState(null)
   //const [formValues, setFormValues] = useState({})
 
   // Dummy data for user and restaurant locations
@@ -27,6 +28,7 @@ function App() {
       const longitude = position.coords.longitude
       console.log(position);
       setUserLocation({latitude, longitude})
+      console.log(userLocation)
     }
     
     function errorFunction() {
@@ -44,6 +46,18 @@ function App() {
       setDistance(response.data.distance_km);
     } catch (error) {
       console.error("Error getting distance:", error)
+    }
+  }
+
+  const handleGetPostalCode = async() => {
+    try {
+      const response = await axios.post('http://127.0.0.1:5000/get_postal_code', {
+        longitude: userLocation.longitude,
+        latitude: userLocation.latitude
+      })
+      setPostalCode(response.data.postal_code)
+    } catch (error) {
+      console.error("Error getting postal code:", error)
     }
   }
 
@@ -81,7 +95,7 @@ function App() {
       <header className="App-header">
         <h1>Test Distance Calculation</h1>
         <button onClick = {getUserLocation}>Get my location</button>
-        <button onClick= {handleGetDistance}>Calculate Distance</button>
+        <button onClick={() => { handleGetDistance(); handleGetPostalCode() }}>Calculate Distance</button>
         <button onClick = {fetchGasPrice}>Get Gas Price</button>
         <CarForm
           formValues = {formValues}
@@ -92,6 +106,7 @@ function App() {
         {distance && <p>Distance: {distance} km</p>}
         {gasPrice && <p>Gas Price: {gasPrice} </p>}
         {fuelConsumption && <p>Fuel Consumption: {fuelConsumption}</p>}
+        {postalCode && <p>Postal Code: {postalCode}</p>}
       </header>
       
     </div>

@@ -21,6 +21,11 @@ def get_distance_from_google_maps(user_location, restaurant_location):
     else:
         raise Exception('Unable to calculate distance')
 
+def get_postal_code_data(position):
+    response = map_client.reverse_geocode(position, result_type='postal_code')
+    postal_code = response[0]['address_components'][0]['long_name']
+    return postal_code
+
 def get_fuel_consumption_data(data):
     car_year = data.get('year')
     car_make = data.get('make')

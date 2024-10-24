@@ -29,7 +29,6 @@ def get_distance():
     data = request.json
     user_location = data.get('user_location')
     restaurant_location = data.get('restaurant_location')
-
     try:
         distance_km = get_distance_from_google_maps(user_location, restaurant_location)
         return jsonify({'distance_km': distance_km}), 200
@@ -37,6 +36,18 @@ def get_distance():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
+@app.route('/get_postal_code', methods=['POST'])
+@cross_origin()  # Enable CORS for this specific route
+def get_postal_code():
+    data = request.json
+    user_longitude = data.get('longitude')
+    user_latitude = data.get('latitude')
+    print(user_longitude, user_latitude)
+    try:
+        postal_code = get_postal_code_data((user_latitude, user_longitude))
+        return jsonify({'postal_code': postal_code}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/get_fuel_consumption', methods=['POST'])
 def get_fuel_consumption():
