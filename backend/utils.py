@@ -12,3 +12,7 @@ def calculate_cost_to_drive(data):
         'drive_cost': cost_of_drive,
         'is_delivery_cheaper': cost_of_drive > delivery_fee
     }
+
+def convert_mpg_to_l_100km(mpg):
+    l_per_100km = 235.214/mpg
+    return l_per_100km

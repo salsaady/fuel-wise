@@ -104,8 +104,8 @@ function App() {
         ></CarForm>
         {userLocation && <p>My Location: {userLocation.latitude} {userLocation.longitude}</p>}
         {distance && <p>Distance: {distance} km</p>}
-        {gasPrice && <p>Gas Price: {gasPrice} </p>}
-        {fuelConsumption && <p>Fuel Consumption: {fuelConsumption}</p>}
+        {gasPrice && <p>Gas Price: {gasPrice} cents/L </p>}
+        {fuelConsumption && <p>Combined Fuel Consumption: {fuelConsumption} L/100km</p>}
         {postalCode && <p>Postal Code: {postalCode}</p>}
       </header>
       

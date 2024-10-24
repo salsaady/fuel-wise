@@ -6,7 +6,7 @@ import requests
 import xml.etree.ElementTree as ET
 from flask_cors import cross_origin
 from services import *
-from utils import calculate_cost_to_drive
+from utils import calculate_cost_to_drive, convert_mpg_to_l_100km
 
 app = Flask(__name__)
 #CORS(app)  # Enable CORS to allow requests from React
@@ -54,12 +54,12 @@ def get_postal_code():
 def get_fuel_consumption():
     data = request.get_json()
     try:
-        fuel_consumption = get_fuel_consumption_data(data)
+        fuel_consumption = convert_mpg_to_l_100km(int(get_fuel_consumption_data(data)))
         return jsonify({'fuel_consumption': fuel_consumption}), 200
     except Exception as e:
         return jsonify({'error':str(e)}), 500
 
-### This is a GET route that returns mock gas price data. ###
+### This is a GET route that returns gas price data. ###
 @app.route('/get_gas_price', methods=['GET'])
 def get_gas_price():
     # Example gas price data
