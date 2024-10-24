@@ -49,5 +49,47 @@ def get_fuel_consumption_data(data):
     data_root = ET.fromstring(vehicle_data_response.content)
     return data_root.find('comb08').text  # Combined MPG
 
-def get_gas_price_data():
-    return 1.30 # Sample data placeholder
+def get_gas_price_data(postal_code):
+    url = "https://www.gasbuddy.com/graphql"
+    headers = {
+        'Content-Type': 'application/json',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+
+    }
+    # The GraphQL query
+    query = '''
+    query LocationBySearchTerm($search: String) {
+        locationBySearchTerm(search: $search) {
+            trends {
+                areaName
+                country
+                today
+                todayLow
+            }
+        }
+    }
+    '''
+    
+    # the payload contains the actual query and any necessary variables that are being sent to the server
+    payload = {
+        "query": query,
+        "variables": {
+            "search": postal_code
+        }
+    }
+
+    # Make the request
+    response = requests.post(url, json=payload, headers=headers)
+
+    if response.status_code == 200:
+        data = response.json()
+        trends = data['data']['locationBySearchTerm']['trends']
+        # Extract the gas prices
+        smallest_region = trends[0]
+        todays_gas_price = smallest_region['today']
+        return todays_gas_price
+    else:
+        raise Exception('Failed to get gas price data')
+
+# Example usage
+# get_gas_price("K1V1R2")  # Postal code for Ottawa, Ontario, Canada

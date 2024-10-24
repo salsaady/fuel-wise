@@ -51,7 +51,7 @@ def get_fuel_consumption():
 @app.route('/get_gas_price', methods=['GET'])
 def get_gas_price():
     # Example gas price data
-    gas_price = get_gas_price_data()
+    gas_price = get_gas_price_data('K1V1R2') # Sample postal code
     return jsonify({'gas_price': gas_price}), 200
 
 ### This is a POST route where the front end will send data 
