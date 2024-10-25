@@ -72,6 +72,7 @@ def get_gas_price():
 # then calculate the driving cost and compare it to the delivery fee. 
 # It returns the calculated costs and a comparison result in JSON format. ###
 @app.route('/calculate_cost', methods=['POST'])
+@cross_origin()  # Enable CORS for this specific route
 def calculate_cost():
     data = request.json
     result = calculate_cost_to_drive(data)

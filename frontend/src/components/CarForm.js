@@ -31,7 +31,7 @@ const CarForm = ({ formValues, handleChange, handleFuelConsumption }) => {
           onChange={handleChange}
         />
       </div>
-      <button type="submit" className="submit-btn">Submit</button>
+      <button type="submit" className="submit-btn">Enter</button>
     </form>
   )
 }

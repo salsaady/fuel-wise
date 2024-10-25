@@ -1,17 +1,20 @@
 ### Reusable functions ###
 
 def calculate_cost_to_drive(data):
-    distance_km = data.get('distance_km')
-    gas_price_per_liter = data.get('gas_price_per_liter')
-    delivery_fee = data.get('delivery_fee')
+    distance_km = data.get('distance')
+    gas_price_per_liter = data.get('gasPrice')
 
-    fuel_efficiency = 8.0  # Example fuel efficiency
-    cost_of_drive = (distance_km / fuel_efficiency) * gas_price_per_liter
-
+    # Adjust fuel efficiency from L/100km to L/km and calculate total fuel used
+    fuel_efficiency = data.get('fuelConsumption')  # L/100km
+    fuel_used = (distance_km / 100) * fuel_efficiency
+    
+    # Calculate cost to drive
+    cost_to_drive = round(((fuel_used * gas_price_per_liter / 100 ) * 2), 2) # Gas price in dollars roundtrip
+    
     return {
-        'drive_cost': cost_of_drive,
-        'is_delivery_cheaper': cost_of_drive > delivery_fee
+        'cost_to_drive': cost_to_drive,
     }
+
 
 def convert_mpg_to_l_100km(mpg):
     l_per_100km = 235.214/mpg

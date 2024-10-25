@@ -28,7 +28,7 @@ const LocationForm = ({ formValues, handleChange, handleGetDistance, getUserLoca
                   onChange={handleChange}
                 />
             </div>
-            <button type="submit" className = "submit-btn">Submit</button>
+            <button type="submit" className = "submit-btn">Enter</button>
         </form>
     )
 }

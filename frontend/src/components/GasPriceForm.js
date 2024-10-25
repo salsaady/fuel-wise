@@ -7,7 +7,7 @@ const GasPriceForm = ({formValues, handleChange, fetchGasPrice, gasPrice, enterG
              <button 
                 type="button"
                 onClick={()=>{fetchGasPrice()}}
-                >Fetch gas price</button>
+                >Fetch live gas price</button>
                 <div className="input-group">
                 <p>Or</p>
             <label htmlFor="gas">Enter gas price: </label>
