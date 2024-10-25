@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './App.css';
 import CarForm from './components/CarForm';  // Importing the CarForm component
+import LocationForm from './components/LocationForm'
 
 function App() {
   // State to hold the calculated distance
@@ -10,34 +11,42 @@ function App() {
   const [fuelConsumption, setFuelConsumption] = useState(null)
   const [userLocation, setUserLocation] = useState(null)
   const [postalCode, setPostalCode] = useState(null)
-  //const [formValues, setFormValues] = useState({})
+  const [carFormValues, setCarFormValues] = useState({});
+  const [locationFormValues, setLocationFormValues] = useState({});
+
+  const handleCarFormChange = (e) => {
+    setCarFormValues({ ...carFormValues, [e.target.id]: e.target.value })
+  }
+  const handleLocationFormChange = (e) => {
+    setLocationFormValues({ ...locationFormValues, [e.target.id]: e.target.value })
+  }
 
   // Dummy data for user and restaurant locations
   //const userLocation = { lat: '45.4215', lng: '-75.6972' }; // Example user location
   const restaurantLocation = { lat: '45.287798', lng: '-75.672958' } // Example restaurant location
-
-  const getUserLocation = async() => {
+ 
+  const getUserLocation = () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          setUserLocation({ latitude, longitude });
+          setLocationFormValues({ ...locationFormValues, start: `${latitude}, ${longitude}` });
+        },
+        (error) => {
+          console.error("Unable to retrieve your location.", error);
+        }
+      );
     } else {
       console.log("Geolocation is not supported by this browser.");
     }
-    
-    function successFunction(position) {
-      const latitude = position.coords.latitude
-      const longitude = position.coords.longitude
-      console.log(position);
-      setUserLocation({latitude, longitude})
-      console.log(userLocation)
-    }
-    
-    function errorFunction() {
-      console.log("Unable to retrieve your location.");
-    }
-  }
+  };
 
   // Function to handle distance calculation
-  const handleGetDistance = async () => {
+  const handleGetDistance = async (e) => {
+    e.preventDefault()
+
     try {
       const response = await axios.post('http://127.0.0.1:5000/get_distance', {
         user_location: `${userLocation.latitude},${userLocation.longitude}`,
@@ -69,14 +78,15 @@ function App() {
       console.error("Error getting gas price", error)
     }
     }
+
   const handleFuelConsumption = async (e) => {
     e.preventDefault()
   
     try {
       const response = await axios.post('http://127.0.0.1:5000/get_fuel_consumption', {
-        year: formValues.year,
-        make: formValues.make,
-        model: formValues.model
+        year: carFormValues.year,
+        make: carFormValues.make,
+        model: carFormValues.model
       });
       // Set the fuel consumption from the response
       setFuelConsumption(response.data.fuel_consumption)
@@ -85,21 +95,23 @@ function App() {
     }
   }
     
-  const [formValues, setFormValues] = useState({})
-  const handleChange = (e) => {
-    setFormValues({ ...formValues, [e.target.id]: e.target.value })
-  }
 
   return (
     <div className="App">
       <header className="App-header">
         <h1>Test Distance Calculation</h1>
-        <button onClick = {getUserLocation}>Get my location</button>
+        {/* <button onClick = {getUserLocation}>Get my location</button>
         <button onClick={() => { handleGetDistance(); handleGetPostalCode() }}>Calculate Distance</button>
-        <button onClick = {fetchGasPrice}>Get Gas Price</button>
+        <button onClick = {fetchGasPrice}>Get Gas Price</button> */}
+        <LocationForm
+          formValues = {locationFormValues}
+          handleChange = {handleLocationFormChange}
+          handleGetDistance = {handleGetDistance}
+          getUserLocation = {getUserLocation}
+        ></LocationForm>
         <CarForm
-          formValues = {formValues}
-          handleChange={handleChange}
+          formValues = {carFormValues}
+          handleChange={handleCarFormChange}
           handleFuelConsumption={handleFuelConsumption}
         ></CarForm>
         {userLocation && <p>My Location: {userLocation.latitude} {userLocation.longitude}</p>}
