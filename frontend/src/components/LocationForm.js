@@ -1,10 +1,9 @@
-import React, {useState} from 'react'
-
+import React from 'react'
 
 const LocationForm = ({ formValues, handleChange, handleGetDistance, getUserLocation}) => {
     return (
         <form onSubmit={handleGetDistance}>
-            <h3>Choose Driving Distance</h3>
+            <h3>Choose driving distance</h3>
             <div className='input-group'>
                 <label htmlFor="start">Starting Point: </label>
                 <input

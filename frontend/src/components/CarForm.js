@@ -5,7 +5,7 @@ const CarForm = ({ formValues, handleChange, handleFuelConsumption }) => {
     <form onSubmit={handleFuelConsumption}>
         <h3>Enter vehicle details</h3>
       <div className="input-group">
-        <label htmlFor="year">Year</label>
+        <label htmlFor="year">Year: </label>
         <input
           type="number"
           id="year"
@@ -14,7 +14,7 @@ const CarForm = ({ formValues, handleChange, handleFuelConsumption }) => {
         />
       </div>
       <div className="input-group">
-        <label htmlFor="make">Make</label>
+        <label htmlFor="make">Make: </label>
         <input
           type="text"
           id="make"
@@ -23,7 +23,7 @@ const CarForm = ({ formValues, handleChange, handleFuelConsumption }) => {
         />
       </div>
       <div className="input-group">
-        <label htmlFor="model">Model</label>
+        <label htmlFor="model">Model: </label>
         <input
           type="text"
           id="model"

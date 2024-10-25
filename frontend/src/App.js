@@ -3,7 +3,7 @@ import axios from 'axios';
 import './App.css';
 import CarForm from './components/CarForm';  // Importing the CarForm component
 import LocationForm from './components/LocationForm'
-
+import GasPriceForm from './components/GasPriceForm'
 function App() {
   // State to hold the calculated distance
   const [distance, setDistance] = useState(null)
@@ -14,6 +14,7 @@ function App() {
   const [postalCode, setPostalCode] = useState(null)
   const [carFormValues, setCarFormValues] = useState({});
   const [locationFormValues, setLocationFormValues] = useState({});
+  const [gasPriceFormValues, setGasPriceFormValues] = useState({});
 
   const handleCarFormChange = (e) => {
     setCarFormValues({ ...carFormValues, [e.target.id]: e.target.value })
@@ -22,6 +23,9 @@ function App() {
     setLocationFormValues({ ...locationFormValues, [e.target.id]: e.target.value })
   }
 
+  const handleGasPriceFormChange = (e) => {
+    setGasPriceFormValues({ ...gasPriceFormValues, [e.target.id]: e.target.value })
+  }
   // Dummy data for user and restaurant locations
   //const userLocation = { lat: '45.4215', lng: '-75.6972' }; // Example user location
   //const restaurantLocation = { lat: '45.287798', lng: '-75.672958' } // Example restaurant location
@@ -29,12 +33,14 @@ function App() {
   const getUserLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
+        async (position) => {
           const latitude = position.coords.latitude;
           const longitude = position.coords.longitude;
           console.log(position)
           setUserLocation({ latitude, longitude });
           setLocationFormValues({ ...locationFormValues, start: "Your location"});
+          // Fetch postal code after setting user location
+          await handleGetPostalCode();
         },
         (error) => {
           console.error("Unable to retrieve your location.", error);
@@ -74,6 +80,12 @@ function App() {
     }
   }
 
+  const enterGasPrice = async (e) => {
+    e.preventDefault()
+    setGasPrice(null)
+    setGasPrice(gasPriceFormValues.gas)
+  }
+
   const fetchGasPrice = async() => {
     try {
       const response = await axios.get('http://127.0.0.1:5000/get_gas_price');
@@ -105,8 +117,8 @@ function App() {
       <header className="App-header">
         <h1>Test Distance Calculation</h1>
         {/* <button onClick = {getUserLocation}>Get my location</button>
-        <button onClick={() => { handleGetDistance(); handleGetPostalCode() }}>Calculate Distance</button>
-        <button onClick = {fetchGasPrice}>Get Gas Price</button> */}
+        <button onClick={() => { handleGetDistance(); handleGetPostalCode() }}>Calculate Distance</button> */}
+        <button onClick = {fetchGasPrice}>Get Gas Price</button>
         <LocationForm
           formValues = {locationFormValues}
           handleChange = {handleLocationFormChange}
@@ -118,6 +130,13 @@ function App() {
           handleChange={handleCarFormChange}
           handleFuelConsumption={handleFuelConsumption}
         ></CarForm>
+        <GasPriceForm
+          formValues={gasPriceFormValues}
+          handleChange={handleGasPriceFormChange}
+          fetchGasPrice={fetchGasPrice}
+          enterGasPrice={enterGasPrice}
+          gasPrice={gasPrice}
+        ></GasPriceForm>
         {userLocation && <p>My Location: {userLocation.latitude} {userLocation.longitude}</p>}
         {distance && <p>Distance: {distance} km</p>}
         {gasPrice && <p>Gas Price: {gasPrice} cents/L </p>}
@@ -129,4 +148,4 @@ function App() {
   )
 }
 
-export default App;
+export default App
