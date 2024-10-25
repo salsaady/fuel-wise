@@ -4,8 +4,9 @@ import React, {useState} from 'react'
 const LocationForm = ({ formValues, handleChange, handleGetDistance, getUserLocation}) => {
     return (
         <form onSubmit={handleGetDistance}>
+            <h3>Choose Driving Distance</h3>
             <div className='input-group'>
-                <label htmlFor="start">Starting Point</label>
+                <label htmlFor="start">Starting Point: </label>
                 <input
                   type="text"
                   id="start"
@@ -18,9 +19,9 @@ const LocationForm = ({ formValues, handleChange, handleGetDistance, getUserLoca
                 onClick={()=>{getUserLocation()
                 }
                 }
-                >Use my location</button>
+                >Use your location</button>
             <div className='input-group'>
-                <label htmlFor="restaurant">Restaurant</label>
+                <label htmlFor="restaurant">Restaurant Address: </label>
                 <input
                   type="text"
                   id="restaurant"

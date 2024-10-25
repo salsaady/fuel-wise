@@ -10,6 +10,7 @@ function App() {
   const [gasPrice, setGasPrice] = useState(null)
   const [fuelConsumption, setFuelConsumption] = useState(null)
   const [userLocation, setUserLocation] = useState(null)
+  const [restaurantLocation, setRestaurantLocation] = useState(null)
   const [postalCode, setPostalCode] = useState(null)
   const [carFormValues, setCarFormValues] = useState({});
   const [locationFormValues, setLocationFormValues] = useState({});
@@ -23,7 +24,7 @@ function App() {
 
   // Dummy data for user and restaurant locations
   //const userLocation = { lat: '45.4215', lng: '-75.6972' }; // Example user location
-  const restaurantLocation = { lat: '45.287798', lng: '-75.672958' } // Example restaurant location
+  //const restaurantLocation = { lat: '45.287798', lng: '-75.672958' } // Example restaurant location
  
   const getUserLocation = () => {
     if (navigator.geolocation) {
@@ -31,8 +32,9 @@ function App() {
         (position) => {
           const latitude = position.coords.latitude;
           const longitude = position.coords.longitude;
+          console.log(position)
           setUserLocation({ latitude, longitude });
-          setLocationFormValues({ ...locationFormValues, start: `${latitude}, ${longitude}` });
+          setLocationFormValues({ ...locationFormValues, start: "Your location"});
         },
         (error) => {
           console.error("Unable to retrieve your location.", error);
@@ -50,8 +52,10 @@ function App() {
     try {
       const response = await axios.post('http://127.0.0.1:5000/get_distance', {
         user_location: `${userLocation.latitude},${userLocation.longitude}`,
-        restaurant_location: `${restaurantLocation.lat},${restaurantLocation.lng}`
+        restaurant_location: locationFormValues.restaurant
+        // restaurant_location: `${restaurantLocation.lat},${restaurantLocation.lng}`
       });
+      console.log(restaurantLocation)
       setDistance(response.data.distance_km);
     } catch (error) {
       console.error("Error getting distance:", error)

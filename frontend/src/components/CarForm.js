@@ -3,6 +3,7 @@ import React from 'react'
 const CarForm = ({ formValues, handleChange, handleFuelConsumption }) => {
   return (
     <form onSubmit={handleFuelConsumption}>
+        <h3>Enter vehicle details</h3>
       <div className="input-group">
         <label htmlFor="year">Year</label>
         <input

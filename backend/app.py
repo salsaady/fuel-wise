@@ -36,6 +36,7 @@ def get_distance():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
+
 @app.route('/get_postal_code', methods=['POST'])
 @cross_origin()  # Enable CORS for this specific route
 def get_postal_code():
