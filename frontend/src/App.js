@@ -6,7 +6,6 @@ import LocationForm from './components/LocationForm'
 import GasPriceForm from './components/GasPriceForm'
 
 function App() {
-  // State to hold the calculated distance
   const [distance, setDistance] = useState(null)
   const [gasPrice, setGasPrice] = useState(null)
   const [fuelConsumption, setFuelConsumption] = useState(null)
@@ -17,6 +16,7 @@ function App() {
   const [locationFormValues, setLocationFormValues] = useState({})
   const [gasPriceFormValues, setGasPriceFormValues] = useState({})
   const [costToDrive, setCostToDrive] = useState(null)
+  const [startLocation, setStartLocation] = useState(null)
 
   const handleCarFormChange = (e) => {
     setCarFormValues({ ...carFormValues, [e.target.id]: e.target.value })
@@ -41,7 +41,6 @@ function App() {
           console.log(position)
           setUserLocation({ latitude, longitude });
           setLocationFormValues({ ...locationFormValues, start: "Your location"});
-          // Fetch postal code after setting user location
         },
         (error) => {
           console.error("Unable to retrieve your location.", error);
@@ -50,19 +49,25 @@ function App() {
     } else {
       console.log("Geolocation is not supported by this browser.");
     }
-  };
+  }
 
   // Function to handle distance calculation
   const handleGetDistance = async (e) => {
     e.preventDefault()
-    await handleGetPostalCode();
+
+    let startLocation = locationFormValues.start
+    if (startLocation=='Your location'){
+      startLocation = `${userLocation.latitude},${userLocation.longitude}`
+    }
+    console.log('starting location is: ', startLocation)
 
     try {
       const response = await axios.post('http://127.0.0.1:5000/get_distance', {
-        user_location: `${userLocation.latitude},${userLocation.longitude}`,
+        user_location: startLocation,
         restaurant_location: locationFormValues.restaurant
-        // restaurant_location: `${restaurantLocation.lat},${restaurantLocation.lng}`
-      });
+      })
+      await handleGetPostalCode();
+
       console.log(restaurantLocation)
       setDistance(response.data.distance_km);
     } catch (error) {

@@ -9,7 +9,7 @@ const LocationForm = ({ formValues, handleChange, handleGetDistance, getUserLoca
                 <input
                   type="text"
                   id="start"
-                  value={formValues.start || " "}
+                  value={formValues.start || ""}
                   onChange={handleChange}
                 />
             </div>
