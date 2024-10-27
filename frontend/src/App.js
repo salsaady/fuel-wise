@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 import CarForm from './components/CarForm';  // Importing the CarForm component
@@ -28,10 +28,18 @@ function App() {
   const handleGasPriceFormChange = (e) => {
     setGasPriceFormValues({ ...gasPriceFormValues, [e.target.id]: Number(e.target.value) })
   }
-  // Dummy data for user and restaurant locations
-  //const userLocation = { lat: '45.4215', lng: '-75.6972' }
-  //const restaurantLocation = { lat: '45.287798', lng: '-75.672958' }
- 
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({ latitude: position.coords.latitude, longitude: position.coords.longitude });
+        },
+        (error) => console.error("Error getting location:", error)
+      )
+    }
+  }, [])
+
   const getUserLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
