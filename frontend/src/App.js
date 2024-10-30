@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import './App.css';
 import CarForm from './components/CarForm';  // Importing the CarForm component
 import LocationForm from './components/LocationForm'
 import GasPriceForm from './components/GasPriceForm'
+import {ArrowRight} from 'lucide-react';
 
 function App() {
   const [distance, setDistance] = useState(null)
@@ -142,38 +143,73 @@ const calculateCost = async(e)=>{
     console.error("Error getting final cost", error)
   }
 }
+const [showLocationForm, setShowLocationForm] = useState()
+const locationFormRef = useRef(null);
+const carFormRef = useRef(null);
+const gasPriceFormRef = useRef(null)
+
+const handleSetShowLocationForm = () => {
+  setShowLocationForm(true)
+}
+
+useEffect(()=> {
+  if (showLocationForm && locationFormRef.current){
+    locationFormRef.current.scrollIntoView()
+  }
+  if (distance && carFormRef.current){
+    carFormRef.current.scrollIntoView()
+  }
+  if (fuelConsumption && gasPriceFormRef.current){
+    gasPriceFormRef.current.scrollIntoView()
+  }
+}, [showLocationForm, distance, fuelConsumption])
+
+const [currentStep, setCurrentStep] = useState(0);
+
+  const handleNextStep = () => {
+    setCurrentStep((prev) => prev + 1);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Distance Cost Calculation</h1>
-        <LocationForm
+    <div className=" w-screen h-min bg-gradient-to-b from-[#a8edab] to-[#fed6e3] App">
+      <div className="min-h-screen flex flex-col items-center justify-center">
+        <h1 className="text-3xl font-semibold">Welcome to Fuel Wise!</h1>
+        <p className="m-4 px-6 max-w-xl">Calculate the fuel cost of your journey quickly and easily. Enter your details, and let us do the rest!</p>
+        {!showLocationForm&&<button onClick={handleSetShowLocationForm} className="hover:bg-blue-100  hover:shadow-md bg-white/80 flex border-2 border-hidden rounded-md border-black p-2">Get started<ArrowRight className="ml-2 transition-transform transform hover:translate-x-1"></ArrowRight></button>}
+        {showLocationForm &&  
+        <section ref={locationFormRef} className="p-8 mt-4 scroll-mt-10">
+          <LocationForm 
           formValues = {locationFormValues}
           handleChange = {handleLocationFormChange}
           handleGetDistance = {handleGetDistance}
           getUserLocation = {getUserLocation}
-        ></LocationForm>
-        {distance && <p>Distance: {distance} km</p>}
-
-        {distance && <CarForm
+          />
+        </section>}
+        { distance && <section ref={carFormRef}><CarForm
           formValues = {carFormValues}
           handleChange={handleCarFormChange}
           handleFuelConsumption={handleFuelConsumption}
-        ></CarForm>}
-        {fuelConsumption && <p>Fuel consumption (combined): {fuelConsumption} L/100km</p>}
-        {fuelConsumption && <GasPriceForm
+        ></CarForm></section>}
+        {fuelConsumption && <GasPriceForm className="mb-8"
           formValues={gasPriceFormValues}
           handleChange={handleGasPriceFormChange}
           fetchGasPrice={fetchGasPrice}
           enterGasPrice={enterGasPrice}
           gasPrice={gasPrice}
         ></GasPriceForm>}
-        {gasPrice && <p>Gas price: {gasPrice} c/L</p>}
-        {gasPrice && <button onClick={calculateCost}>Calculate cost for trip</button>}
-        {costToDrive && <p>Cost to drive (roundtrip): ${costToDrive}</p>}
 
-      </header>
-      
-    </div>
+        {gasPrice && <p>Gas price: {gasPrice} c/L</p>}
+        {gasPrice && <button
+        className = "px-3 p-1 shadow-md hover:bg-blue-200 bg-blue-300 font-medium submit-btn"
+        onClick={calculateCost}>Calculate cost for trip</button>}
+        {costToDrive && <p>Cost to drive (roundtrip): ${costToDrive}</p>}      
+
+      </div>
+       
+        {/* {distance && <p>Distance: {distance} km</p>} */}
+        
+        {/* {fuelConsumption && <p>Fuel consumption (combined): {fuelConsumption} L/100km</p>} */}
+            </div>
   )
 }
 

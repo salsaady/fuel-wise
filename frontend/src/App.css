@@ -1,5 +1,8 @@
+@import "~slick-carousel/slick/slick.css";
+@import "~slick-carousel/slick/slick-theme.css";
+
 .App {
-  text-align: center;
+  font-family: "system-ui";
 }
 
 .App-logo {
@@ -11,6 +14,64 @@
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
+}
+
+h1 {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+html,
+body {
+  overflow: scroll;
+  scroll-behavior: smooth;
+}
+
+form {
+}
+
+h3 {
+  font-size: 22px;
+  text-align: center;
+  font-weight: 500;
+}
+.formInput {
+  border-radius: 0.375rem /* 6px */;
+  background-color: rgb(255 255 255 / 0.8);
+  width: 265px;
+  padding-left: 0.5rem /* 8px */;
+}
+
+.carFormInput {
+  border-radius: 0.375rem /* 6px */;
+  background-color: rgb(255 255 255 / 0.8);
+  width: 235px;
+  padding-left: 0.5rem /* 8px */;
+}
+.gasFormInput {
+  border-radius: 0.375rem /* 6px */;
+  background-color: rgb(255 255 255 / 0.8);
+  width: 160px;
+  padding-left: 0.5rem /* 8px */;
+}
+
+.submit-btn {
+  margin: 0.5rem;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  border-style: hidden;
+  border-width: 2px;
+  border-radius: 0.375rem;
+}
+
+.next-btn {
+}
+
+.formLabel {
+  font-size: 18px;
+  font-weight: 400;
+  /* font-weight: bold; */
 }
 
 .App-header {
@@ -35,4 +96,31 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* App.css */
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutToLeft {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.slide-in {
+  animation: slideInFromRight 0.5s forwards;
+}
+
+.slide-out {
+  animation: slideOutToLeft 0.5s forwards;
 }
