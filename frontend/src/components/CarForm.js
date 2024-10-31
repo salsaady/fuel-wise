@@ -4,20 +4,14 @@ import axios from "axios";
 const CarForm = ({ formValues, handleChange, handleFuelConsumption }) => {
   const [years, setYears] = useState([]);
   const [selectedYear, setSelectedYear] = useState("");
-  const [makes, setMakes] = useState([]);
-  const [setMake, setSelectedMake] = useState("");
 
   useEffect(() => {
     const fetchYears = async () => {
       const response = await axios.get("http://127.0.0.1:5000/years");
       setYears(response.data);
     };
-    const fetchMakes = async () => {
-      const response = await axios.get("http://127.0.0.1:5000/makes");
-      setMakes(response.data);
-    };
+
     fetchYears();
-    fetchMakes();
   }, []);
 
   return (
