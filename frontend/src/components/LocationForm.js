@@ -13,7 +13,7 @@ const LocationForm = ({
       onSubmit={handleGetDistance}
       className="w-96 p-6 px-10 rounded-lg bg-white shadow-lg mx-auto space-y-4"
     >
-      <h3 className="mb-7">Choose driving distance</h3>
+      <h3 className="mb-7">Choose your route</h3>
       <div className="">
         <div className="flex justify-between">
           <label className="p-2 formLabel" htmlFor="start">

@@ -4,46 +4,60 @@ import axios from "axios";
 const CarForm = ({ formValues, handleChange, handleFuelConsumption }) => {
   const [years, setYears] = useState([]);
   const [selectedYear, setSelectedYear] = useState("");
+  const [makes, setMakes] = useState([]);
+  const [setMake, setSelectedMake] = useState("");
 
   useEffect(() => {
     const fetchYears = async () => {
       const response = await axios.get("http://127.0.0.1:5000/years");
       setYears(response.data);
     };
+    const fetchMakes = async () => {
+      const response = await axios.get("http://127.0.0.1:5000/makes");
+      setMakes(response.data);
+    };
     fetchYears();
+    fetchMakes();
   }, []);
+
   return (
     <form
       onSubmit={handleFuelConsumption}
       className="bg-white mb-14 w-96 p-6 px-10 rounded-lg shadow-lg mx-auto space-y-4"
     >
-      <h3 className="mb-7">Enter vehicle details</h3>
+      <h3 className="mb-7">Enter your vehicle details</h3>
       <div className="flex justify-between">
         <label className="formLabel" htmlFor="year">
           Year:{" "}
         </label>
         {/* Year Dropdown */}
 
-        <select
-          value={selectedYear}
-          onChange={(e) => {
-            setSelectedYear(e.target.value);
-          }}
-        >
-          <option value=""></option>
-          {years.map((year, idx) => (
-            <option key={idx} value={year}>
-              {year}
-            </option>
-          ))}
-        </select>
-        <input
+        <div>
+          <select
+            id="year"
+            className="carFormInput"
+            type="number"
+            value={formValues.year || selectedYear}
+            onChange={(e) => {
+              setSelectedYear(e.target.value);
+              handleChange(e);
+            }}
+          >
+            <option value=""></option>
+            {years.map((year, idx) => (
+              <option key={idx} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+        </div>
+        {/* <input
           className="carFormInput shadow ml-4"
           type="number"
           id="year"
           value={formValues.year || ""}
           onChange={handleChange}
-        />
+        /> */}
       </div>
       <div className="flex justify-between">
         <label className="formLabel" htmlFor="make">
