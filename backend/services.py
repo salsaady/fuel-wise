@@ -1,4 +1,5 @@
 ### This file contains the logic for making requests to external APIs ###
+from flask import jsonify
 import googlemaps
 import requests
 import xml.etree.ElementTree as ET
@@ -25,6 +26,15 @@ def get_postal_code_data(position):
     response = map_client.reverse_geocode(position, result_type='postal_code')
     postal_code = response[0]['address_components'][0]['long_name']
     return postal_code
+
+def get_model_years_data():
+    years = []
+    model_years_url = "https://www.fueleconomy.gov/ws/rest/vehicle/menu/year"
+    response = requests.get(model_years_url)
+    root = ET.fromstring(response.content).findall('.//value')
+    for i in root:
+        years.append(i.text)
+    return years
 
 def get_fuel_consumption_data(data):
     car_year = data.get('year')

@@ -67,6 +67,16 @@ def get_gas_price():
     gas_price = get_gas_price_data(postal_code)
     return jsonify({'gas_price': gas_price}), 200
 
+@app.route('/years', methods=['GET'])
+def get_model_years():
+    years = []
+    model_years_url = "https://www.fueleconomy.gov/ws/rest/vehicle/menu/year"
+    response = requests.get(model_years_url)
+    root = ET.fromstring(response.content).findall('.//value')
+    for i in root:
+        years.append(i.text)
+    return jsonify(years)
+
 ### This is a POST route where the front end will send data 
 # (like distance, gas price, and delivery fee). The back end will 
 # then calculate the driving cost and compare it to the delivery fee. 

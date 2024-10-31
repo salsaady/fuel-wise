@@ -84,19 +84,32 @@ from utils import calculate_cost_to_drive
 API_KEY = 'AIzaSyDE6Z6t0y_yj248Tq-o4RsBqAdTrIzl8Mc'
 map_client = googlemaps.Client(API_KEY)
 
-def get_postal_code_data(position):
-    response = map_client.reverse_geocode(position, result_type='postal_code')
-    postal_code = response[0]['address_components'][0]['long_name']
-    return postal_code
+# def get_postal_code_data(position):
+#     response = map_client.reverse_geocode(position, result_type='postal_code')
+#     postal_code = response[0]['address_components'][0]['long_name']
+#     return postal_code
 
-def get_postal_code():
-    data = request.json
-    user_location = data.get('user_location')
+# def get_postal_code():
+#     data = request.json
+#     user_location = data.get('user_location')
 
-    try:
-        postal_code = get_postal_code_data(user_location)
-        return jsonify({'postal_code': postal_code}), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+#     try:
+#         postal_code = get_postal_code_data(user_location)
+#         return jsonify({'postal_code': postal_code}), 200
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
     
-print(get_postal_code_data((45.2837483, -75.6903354)))
+# print(get_postal_code_data((45.2837483, -75.6903354)))
+
+def get_model_years_data():
+    years = []
+    model_years_url = "https://www.fueleconomy.gov/ws/rest/vehicle/menu/year"
+    response = requests.get(model_years_url)
+    root = ET.fromstring(response.content).findall('.//value')
+    for i in root:
+        years.append(i.text)
+    return jsonify( years)
+
+
+
+print(get_model_years_data())

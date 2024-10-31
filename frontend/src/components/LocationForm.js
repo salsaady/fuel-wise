@@ -32,7 +32,7 @@ const LocationForm = ({
         <button
           type="button"
           onClick={getUserLocation}
-          className="mt-3 border border-black pr-2 pl-1 py-1 text-sm submit-btn shadow-lg hover:bg-slate-200 "
+          className="mt-3 border border-black pr-2 pl-1 py-1 text-sm submit-btn shadow-lg hover:bg-slate-200 bg-white/80"
         >
           <LocateFixed className="size-5 mr-2 text-blue-600"></LocateFixed>Your
           location

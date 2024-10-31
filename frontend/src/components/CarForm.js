@@ -1,6 +1,17 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const CarForm = ({ formValues, handleChange, handleFuelConsumption }) => {
+  const [years, setYears] = useState([]);
+  const [selectedYear, setSelectedYear] = useState("");
+
+  useEffect(() => {
+    const fetchYears = async () => {
+      const response = await axios.get("http://127.0.0.1:5000/years");
+      setYears(response.data);
+    };
+    fetchYears();
+  }, []);
   return (
     <form
       onSubmit={handleFuelConsumption}
@@ -11,6 +22,21 @@ const CarForm = ({ formValues, handleChange, handleFuelConsumption }) => {
         <label className="formLabel" htmlFor="year">
           Year:{" "}
         </label>
+        {/* Year Dropdown */}
+
+        <select
+          value={selectedYear}
+          onChange={(e) => {
+            setSelectedYear(e.target.value);
+          }}
+        >
+          <option value=""></option>
+          {years.map((year, idx) => (
+            <option key={idx} value={year}>
+              {year}
+            </option>
+          ))}
+        </select>
         <input
           className="carFormInput shadow ml-4"
           type="number"
