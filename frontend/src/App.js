@@ -251,7 +251,7 @@ function App() {
             {costToDrive && (
               <span className="text-center text-2xl">
                 <p className="font-bold text-center">${costToDrive}</p>
-                <p className="text-xlg"> (roundtrip)</p>
+                <p className="text-xlg"> </p>
               </span>
             )}
           </div>

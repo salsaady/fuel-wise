@@ -9,7 +9,7 @@ def calculate_cost_to_drive(data):
     fuel_used = (distance_km / 100) * fuel_efficiency
     
     # Calculate cost to drive
-    cost_to_drive = round(((fuel_used * gas_price_per_liter / 100 ) * 2), 2) # Gas price in dollars roundtrip
+    cost_to_drive = round(((fuel_used * gas_price_per_liter / 100 )), 2)
     
     return {
         'cost_to_drive': cost_to_drive,
