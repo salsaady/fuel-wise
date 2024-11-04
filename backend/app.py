@@ -21,6 +21,31 @@ other_address = 'Ottawa, ON'
 response = map_client.distance_matrix(work_place_address, other_address)
 response = map_client.geocode(work_place_address)
 
+
+@app.route('/autocomplete', methods=['GET'])
+def autocomplete():
+    input_text = request.args.get('input')
+    if not input_text:
+        return jsonify({"error": "No input provided"}), 400
+    
+    url = "https://maps.googleapis.com/maps/api/place/autocomplete/json"
+    params = {
+        "input": input_text,
+        "key": API_KEY,
+        "types": "establishment",
+        "location": "45.4215,-75.6972",  # Optional: Use a default location
+        "radius": 50000  # Optional: Restrict to a specific radius
+    }
+    
+    response = requests.get(url, params=params)
+    if response.status_code != 200:
+        return jsonify({"error": "Failed to fetch suggestions"}), 500
+    
+    suggestions = response.json().get("predictions", [])
+    return jsonify(suggestions)
+
+
+
 ### Returns distance between the two locations, the user's location
 # and the restaurant locaton ###
 @app.route('/get_distance', methods=['POST'])

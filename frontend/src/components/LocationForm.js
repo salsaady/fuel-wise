@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { LocateFixed, Circle, MapPin } from "lucide-react";
+import axios from "axios";
+import debounce from "lodash.debounce";
 
 const LocationForm = ({
   onNext,
@@ -8,6 +10,30 @@ const LocationForm = ({
   handleGetDistance,
   getUserLocation,
 }) => {
+  const [suggestions, setSuggestions] = useState([]);
+
+  // Fetch suggestions based on input query
+  const fetchSuggestions = async (query) => {
+    try {
+      const response = await axios.get("http://127.0.0.1:5000/autocomplete", {
+        params: { input: query },
+      });
+      setSuggestions(response.data);
+      console.log(suggestions);
+    } catch (error) {
+      console.error("Error fetching suggestions:", error);
+    }
+  };
+
+  // Debounce fetchSuggestions to limit API calls
+  const debouncedFetchSuggestions = debounce((query) => {
+    if (query) fetchSuggestions(query);
+  }, 300);
+
+  const handleRestaurantChange = (e) => {
+    handleChange(e);
+    debouncedFetchSuggestions(e.target.value);
+  };
   return (
     <form
       onSubmit={handleGetDistance}
@@ -26,7 +52,7 @@ const LocationForm = ({
             type="text"
             id="start"
             value={formValues.start || ""}
-            onChange={handleChange}
+            onChange={handleRestaurantChange}
           />
         </div>
         <button
@@ -47,8 +73,30 @@ const LocationForm = ({
             type="text"
             id="restaurant"
             value={formValues.restaurant || ""}
-            onChange={handleChange}
+            onChange={handleRestaurantChange}
           />
+
+          {suggestions.length > 0 && (
+            <ul className=" absolute z-10 mt-10  bg-white border border-gray-300 rounded-lg shadow-lg">
+              {suggestions.map((suggestion, index) => (
+                <li
+                  key={index}
+                  className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                  onClick={() => {
+                    handleChange({
+                      target: {
+                        id: "restaurant",
+                        value: suggestion.description,
+                      },
+                    });
+                    setSuggestions([]);
+                  }}
+                >
+                  {suggestion.description}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
       <button
