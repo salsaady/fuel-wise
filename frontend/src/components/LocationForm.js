@@ -50,7 +50,7 @@ const LocationForm = ({
       className="w-96 p-6 px-10 rounded-lg bg-white shadow-lg mx-auto space-y-4"
     >
       {/* Start Location Input with Dropdown */}
-      <h3 className="">Choose your route</h3>
+      <h3 className="">Determine your route</h3>
       <div className="relative pb-6">
         <div className="flex justify-between">
           <label className="p-2 formLabel" htmlFor="start">
@@ -62,15 +62,16 @@ const LocationForm = ({
             className="formInput"
             type="text"
             id="start"
-            placeholder="Choose starting location"
+            placeholder="Choose starting point..."
             value={formValues.start || ""}
             onChange={handleStartChange}
+            autoComplete="off"
           />
         </div>
         {startSuggestions.length > 0 && (
-          <ul className="text-sm w-auto absolute z-10 mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
+          <ul className="text-sm absolute z-10 mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
             <li
-              className="flex items-center px-2 py-2 cursor-pointer hover:bg-gray-100"
+              className="flex w-72 mr-4 items-center px-2 py-2 cursor-pointer hover:bg-gray-100"
               onClick={() => {
                 getUserLocation();
                 setStartSuggestions([]);
@@ -113,6 +114,7 @@ const LocationForm = ({
             value={formValues.restaurant || ""}
             onChange={handleRestaurantChange}
             placeholder="Choose destination..."
+            autoComplete="off"
           />
 
           {restaurantSuggestions.length > 0 && (
