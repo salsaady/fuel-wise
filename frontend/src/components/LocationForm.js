@@ -53,8 +53,8 @@ const LocationForm = ({
       <h3 className="">Determine your route</h3>
       <div className="relative pb-6">
         <div className="flex justify-between">
-          <label className="p-2 formLabel" htmlFor="start">
-            <div className="flex items-center size-5">
+          <label className="p-2 flex  items-center formLabel" htmlFor="start">
+            <div className="flex justify-center items-center size-5">
               <Circle className="size-4" />
             </div>
           </label>
@@ -104,8 +104,11 @@ const LocationForm = ({
       </div>
       <div className="relative ">
         <div className="flex justify-between">
-          <label className="p-2 formLabel" htmlFor="restaurant">
-            <MapPin className="size-5 text-red-600" />
+          <label
+            className="p-2 flex items-center formLabel"
+            htmlFor="restaurant"
+          >
+            <MapPin className="justify-center items-center size-5 text-red-600" />
           </label>
           <input
             className="formInput"
