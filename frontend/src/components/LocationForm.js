@@ -13,7 +13,7 @@ const LocationForm = ({
       onSubmit={handleGetDistance}
       className="w-96 p-6 px-10 rounded-lg bg-white shadow-lg mx-auto space-y-4"
     >
-      <h3 className="mb-7">Choose driving distance</h3>
+      <h3 className="mb-7">Choose your route</h3>
       <div className="">
         <div className="flex justify-between">
           <label className="p-2 formLabel" htmlFor="start">
@@ -32,7 +32,7 @@ const LocationForm = ({
         <button
           type="button"
           onClick={getUserLocation}
-          className="mt-3 border border-black pr-2 pl-1 py-1 text-sm submit-btn shadow-lg hover:bg-slate-200 "
+          className="mt-3 border border-black pr-2 pl-1 py-1 text-sm submit-btn shadow-lg hover:bg-slate-200 bg-white/80"
         >
           <LocateFixed className="size-5 mr-2 text-blue-600"></LocateFixed>Your
           location
@@ -43,7 +43,7 @@ const LocationForm = ({
             <MapPin className="size-5 text-red-600" />
           </label>
           <input
-            className="formInput shadow-lg"
+            className="formInput"
             type="text"
             id="restaurant"
             value={formValues.restaurant || ""}
