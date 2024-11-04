@@ -78,6 +78,22 @@ def get_model_years():
     return jsonify(years)
 
 
+@app.route('/makes', methods=['POST'])
+def get_vehicle_makes():
+    data = request.get_json()
+    year = data.get('year')
+    makes = []
+    makes_url = f"https://www.fueleconomy.gov/ws/rest/vehicle/menu/make?year={year}"
+    response = requests.get(makes_url)
+    if response.status_code != 200:
+        return jsonify({'error': 'Failed to retrieve makes data'}), 500
+
+    root = ET.fromstring(response.content).findall('.//value')
+    for i in root:
+        makes.append(i.text)
+    
+    return jsonify(makes)
+
 ### This is a POST route where the front end will send data 
 # (like distance, gas price, and delivery fee). The back end will 
 # then calculate the driving cost and compare it to the delivery fee. 

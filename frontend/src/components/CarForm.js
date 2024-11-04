@@ -4,15 +4,41 @@ import axios from "axios";
 const CarForm = ({ formValues, handleChange, handleFuelConsumption }) => {
   const [years, setYears] = useState([]);
   const [selectedYear, setSelectedYear] = useState("");
+  const [makes, setMakes] = useState([]);
+  const [selectedMake, setSelectedMake] = useState("");
 
+  useEffect(
+    () => {
+      const fetchYears = async () => {
+        const response = await axios.get("http://127.0.0.1:5000/years");
+        setYears(response.data);
+      };
+
+      fetchYears();
+      console.log(selectedYear);
+    },
+    [],
+    [selectedYear]
+  );
+
+  // Fetch makes whenever selectedYear changes
   useEffect(() => {
-    const fetchYears = async () => {
-      const response = await axios.get("http://127.0.0.1:5000/years");
-      setYears(response.data);
-    };
+    console.log(selectedYear);
 
-    fetchYears();
-  }, []);
+    const fetchMakes = async () => {
+      try {
+        console.log(selectedYear);
+        const response = await axios.post("http://127.0.0.1:5000/makes", {
+          year: selectedYear,
+        });
+        console.log(response.data);
+        setMakes(response.data); // Assuming setMakes updates the dropdown options
+      } catch (error) {
+        console.error("Error fetching makes", error);
+      }
+    };
+    fetchMakes();
+  }, [selectedYear]);
 
   return (
     <form
@@ -31,7 +57,7 @@ const CarForm = ({ formValues, handleChange, handleFuelConsumption }) => {
             id="year"
             className="carFormInput"
             type="number"
-            value={formValues.year || selectedYear}
+            value={selectedYear}
             onChange={(e) => {
               setSelectedYear(e.target.value);
               handleChange(e);
@@ -53,18 +79,42 @@ const CarForm = ({ formValues, handleChange, handleFuelConsumption }) => {
           onChange={handleChange}
         /> */}
       </div>
-      <div className="flex justify-between">
-        <label className="formLabel" htmlFor="make">
-          Make:{" "}
-        </label>
-        <input
+      {selectedYear && (
+        <div className="flex justify-between">
+          <label className="formLabel" htmlFor="make">
+            Make:{" "}
+          </label>
+          {/* Make Dropdown */}
+
+          <div>
+            <select
+              id="make"
+              className="carFormInput"
+              type="text"
+              value={selectedMake}
+              onChange={(e) => {
+                setSelectedMake(e.target.value);
+                handleChange(e);
+              }}
+            >
+              <option value=""></option>
+              {makes.map((make, idx) => (
+                <option key={idx} value={make}>
+                  {make}
+                </option>
+              ))}
+            </select>
+          </div>
+          {/* <input
           className="carFormInput shadow ml-4"
           type="text"
           id="make"
           value={formValues.make || ""}
           onChange={handleChange}
-        />
-      </div>
+        /> */}
+        </div>
+      )}
+
       <div className="flex justify-between">
         <label className="formLabel" htmlFor="flex justify-start model">
           Model:{" "}
