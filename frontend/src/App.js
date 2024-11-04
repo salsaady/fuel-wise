@@ -53,7 +53,7 @@ function App() {
   const getUserLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
+        async (position) => {
           const latitude = position.coords.latitude;
           const longitude = position.coords.longitude;
           console.log(position);
@@ -62,6 +62,20 @@ function App() {
             ...locationFormValues,
             start: "Your location",
           });
+
+          // Send user's location to the backend
+          try {
+            await axios.post("http://127.0.0.1:5000/user_location", {
+              latitude,
+              longitude,
+            });
+            console.log("User location sent to backend:", {
+              latitude,
+              longitude,
+            });
+          } catch (error) {
+            console.error("Error sending user location to backend:", error);
+          }
         },
         (error) => {
           console.error("Unable to retrieve your location.", error);
@@ -251,7 +265,7 @@ function App() {
             {costToDrive && (
               <span className="text-center text-2xl">
                 <p className="font-bold text-center">${costToDrive}</p>
-                <p className="text-xlg"> </p>
+                <p className="text-xlg"> (roundtrip)</p>
               </span>
             )}
           </div>

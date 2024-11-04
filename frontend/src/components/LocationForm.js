@@ -77,11 +77,11 @@ const LocationForm = ({
           />
 
           {suggestions.length > 0 && (
-            <ul className=" absolute z-10 mt-10  bg-white border border-gray-300 rounded-lg shadow-lg">
+            <ul className="text-sm w-auto absolute z-10 mt-10  bg-white border border-gray-300 rounded-md shadow-lg">
               {suggestions.map((suggestion, index) => (
                 <li
                   key={index}
-                  className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                  className="flex items-center px-2 py-2 cursor-pointer hover:bg-gray-100"
                   onClick={() => {
                     handleChange({
                       target: {
@@ -92,6 +92,8 @@ const LocationForm = ({
                     setSuggestions([]);
                   }}
                 >
+                  <MapPin className="mr-3 w-5 h-5 text-slate-600" />
+
                   {suggestion.description}
                 </li>
               ))}

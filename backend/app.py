@@ -21,20 +21,35 @@ other_address = 'Ottawa, ON'
 response = map_client.distance_matrix(work_place_address, other_address)
 response = map_client.geocode(work_place_address)
 
-
+@app.route('/user_location', methods=['POST'])
+def receive_user_location():
+    global user_location
+    data = request.get_json()
+    latitude = data.get('latitude')
+    longitude = data.get('longitude')
+    if latitude and longitude:
+        user_location = {"latitude": latitude, "longitude": longitude}
+        print("Received user location:", latitude, longitude)
+        return jsonify({"status": "Location received"}), 200
+    else:
+        return jsonify({"error": "Invalid location data"}), 400
+    
 @app.route('/autocomplete', methods=['GET'])
 def autocomplete():
     input_text = request.args.get('input')
     if not input_text:
         return jsonify({"error": "No input provided"}), 400
     
+    location = f"{user_location['latitude']},{user_location['longitude']}"
+
     url = "https://maps.googleapis.com/maps/api/place/autocomplete/json"
     params = {
         "input": input_text,
         "key": API_KEY,
         "types": "establishment",
-        "location": "45.4215,-75.6972",  # Optional: Use a default location
-        "radius": 50000  # Optional: Restrict to a specific radius
+        "location": location,
+        "radius": 5000,
+        "locationbias": True,
     }
     
     response = requests.get(url, params=params)
@@ -42,6 +57,7 @@ def autocomplete():
         return jsonify({"error": "Failed to fetch suggestions"}), 500
     
     suggestions = response.json().get("predictions", [])
+    print(suggestions)
     return jsonify(suggestions)
 
 
