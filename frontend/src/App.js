@@ -200,7 +200,7 @@ function App() {
         {!showLocationForm && (
           <button
             onClick={handleSetShowLocationForm}
-            className="bg-pink-500 hover:bg-pink-400  hover:shadow-md bg-white/80 flex border-2 border-hidden rounded-md border-black p-2"
+            className="bg-pink-500 hover:bg-pink-400  hover:shadow-md flex border-2 border-hidden rounded-md border-black p-2"
           >
             Get started
             <ArrowRight className="ml-2 transition-transform transform hover:translate-x-1"></ArrowRight>
