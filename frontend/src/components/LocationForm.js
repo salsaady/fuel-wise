@@ -65,7 +65,7 @@ const LocationForm = ({
             onChange={handleStartChange}
           />
           {startSuggestions.length > 0 && (
-            <ul className="text-sm w-auto absolute z-10 mt-10 bg-white border border-gray-300 rounded-md shadow-lg">
+            <ul className="text-sm w-1/2 absolute z-10 mt-10 bg-white border border-gray-300 rounded-md shadow-lg">
               {startSuggestions.map((suggestion, index) => (
                 <li
                   key={index}
@@ -80,7 +80,7 @@ const LocationForm = ({
                     setStartSuggestions([]);
                   }}
                 >
-                  <MapPin className="mr-3 w-5 h-5 text-slate-600" />
+                  <MapPin className="flex-shrink-0 flex-grow-0 mr-3 w-5 h-5 text-slate-600" />
                   {suggestion.description}
                 </li>
               ))}
@@ -109,11 +109,11 @@ const LocationForm = ({
           />
 
           {restaurantSuggestions.length > 0 && (
-            <ul className="text-sm w-auto absolute z-10 mt-10 bg-white border border-gray-300 rounded-md shadow-lg">
+            <ul className="w-1/2 text-sm absolute z-10 mt-10 bg-white border border-gray-300 rounded-md shadow-lg">
               {restaurantSuggestions.map((suggestion, index) => (
                 <li
                   key={index}
-                  className="flex items-center px-2 py-2 cursor-pointer hover:bg-gray-100"
+                  className="flex  items-center px-2 py-2 cursor-pointer hover:bg-gray-100"
                   onClick={() => {
                     handleChange({
                       target: {
@@ -124,7 +124,7 @@ const LocationForm = ({
                     setRestaurantSuggestions([]);
                   }}
                 >
-                  <MapPin className="mr-3 w-5 h-5 text-slate-600" />
+                  <MapPin className="flex-shrink-0 flex-grow-0 mr-3 w-5 h-5 text-slate-600" />
                   {suggestion.description}
                 </li>
               ))}

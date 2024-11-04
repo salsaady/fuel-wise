@@ -49,6 +49,7 @@ def autocomplete():
         "types": "establishment",
         "location": location,
         "radius": 5000,
+        # "strictbounds": True,
         "locationbias": True,
     }
     

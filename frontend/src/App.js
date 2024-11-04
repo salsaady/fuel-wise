@@ -39,11 +39,23 @@ function App() {
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocation({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          });
+        async (position) => {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          setUserLocation({ latitude, longitude });
+          // Send user's location to the backend
+          try {
+            await axios.post("http://127.0.0.1:5000/user_location", {
+              latitude,
+              longitude,
+            });
+            console.log("User location sent to backend:", {
+              latitude,
+              longitude,
+            });
+          } catch (error) {
+            console.error("Error sending user location to backend:", error);
+          }
         },
         (error) => console.error("Error getting location:", error)
       );
@@ -62,20 +74,6 @@ function App() {
             ...locationFormValues,
             start: "Your location",
           });
-
-          // Send user's location to the backend
-          try {
-            await axios.post("http://127.0.0.1:5000/user_location", {
-              latitude,
-              longitude,
-            });
-            console.log("User location sent to backend:", {
-              latitude,
-              longitude,
-            });
-          } catch (error) {
-            console.error("Error sending user location to backend:", error);
-          }
         },
         (error) => {
           console.error("Unable to retrieve your location.", error);
