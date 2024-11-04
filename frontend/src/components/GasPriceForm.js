@@ -20,7 +20,7 @@ const GasPriceForm = ({
         onClick={() => {
           fetchGasPrice();
         }}
-        className="hover:bg-slate-200 border border-black pr-2 pl-1 py-1 text-sm submit-btn shadow-lg hover:bg-white/100  bg-white/80"
+        className="hover:bg-slate-200 border border-black pr-2 pl-1 py-1 text-sm submit-btn shadow-lg bg-white/80"
       >
         <div className="px-1 flex justify-between items-center ">
           <div className="flex items-center size-6">
@@ -31,12 +31,12 @@ const GasPriceForm = ({
       </button>
 
       <p className="text-center text-lg">Or</p>
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center">
         <label className="formLabel" htmlFor="gas">
           Enter gas price:{" "}
         </label>
         <input
-          className=" gasFormInput "
+          className=" gasFormInput"
           type="number"
           id="gas"
           value={formValues.gas || ""}
