@@ -10,30 +10,40 @@ const LocationForm = ({
   handleGetDistance,
   getUserLocation,
 }) => {
-  const [suggestions, setSuggestions] = useState([]);
+  const [startSuggestions, setStartSuggestions] = useState([]);
+  const [restaurantSuggestions, setRestaurantSuggestions] = useState([]);
 
   // Fetch suggestions based on input query
-  const fetchSuggestions = async (query) => {
+  const fetchSuggestions = async (query, setSuggestions) => {
     try {
       const response = await axios.get("http://127.0.0.1:5000/autocomplete", {
         params: { input: query },
       });
       setSuggestions(response.data);
-      console.log(suggestions);
     } catch (error) {
       console.error("Error fetching suggestions:", error);
     }
   };
 
-  // Debounce fetchSuggestions to limit API calls
-  const debouncedFetchSuggestions = debounce((query) => {
-    if (query) fetchSuggestions(query);
+  // Debounced functions for each field
+  const debouncedFetchStartSuggestions = debounce((query) => {
+    if (query) fetchSuggestions(query, setStartSuggestions);
   }, 300);
+
+  const debouncedFetchRestaurantSuggestions = debounce((query) => {
+    if (query) fetchSuggestions(query, setRestaurantSuggestions);
+  }, 300);
+
+  const handleStartChange = (e) => {
+    handleChange(e);
+    debouncedFetchStartSuggestions(e.target.value);
+  };
 
   const handleRestaurantChange = (e) => {
     handleChange(e);
-    debouncedFetchSuggestions(e.target.value);
+    debouncedFetchRestaurantSuggestions(e.target.value);
   };
+
   return (
     <form
       onSubmit={handleGetDistance}
@@ -48,12 +58,34 @@ const LocationForm = ({
             </div>
           </label>
           <input
-            className="formInput  "
+            className="formInput"
             type="text"
             id="start"
             value={formValues.start || ""}
-            onChange={handleRestaurantChange}
+            onChange={handleStartChange}
           />
+          {startSuggestions.length > 0 && (
+            <ul className="text-sm w-auto absolute z-10 mt-10 bg-white border border-gray-300 rounded-md shadow-lg">
+              {startSuggestions.map((suggestion, index) => (
+                <li
+                  key={index}
+                  className="flex items-center px-2 py-2 cursor-pointer hover:bg-gray-100"
+                  onClick={() => {
+                    handleChange({
+                      target: {
+                        id: "start",
+                        value: suggestion.description,
+                      },
+                    });
+                    setStartSuggestions([]);
+                  }}
+                >
+                  <MapPin className="mr-3 w-5 h-5 text-slate-600" />
+                  {suggestion.description}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
         <button
           type="button"
@@ -65,7 +97,7 @@ const LocationForm = ({
         </button>
 
         <div className="flex justify-between my-6">
-          <label className="p-2 formLabel " htmlFor="restaurant">
+          <label className="p-2 formLabel" htmlFor="restaurant">
             <MapPin className="size-5 text-red-600" />
           </label>
           <input
@@ -76,9 +108,9 @@ const LocationForm = ({
             onChange={handleRestaurantChange}
           />
 
-          {suggestions.length > 0 && (
-            <ul className="text-sm w-auto absolute z-10 mt-10  bg-white border border-gray-300 rounded-md shadow-lg">
-              {suggestions.map((suggestion, index) => (
+          {restaurantSuggestions.length > 0 && (
+            <ul className="text-sm w-auto absolute z-10 mt-10 bg-white border border-gray-300 rounded-md shadow-lg">
+              {restaurantSuggestions.map((suggestion, index) => (
                 <li
                   key={index}
                   className="flex items-center px-2 py-2 cursor-pointer hover:bg-gray-100"
@@ -89,11 +121,10 @@ const LocationForm = ({
                         value: suggestion.description,
                       },
                     });
-                    setSuggestions([]);
+                    setRestaurantSuggestions([]);
                   }}
                 >
                   <MapPin className="mr-3 w-5 h-5 text-slate-600" />
-
                   {suggestion.description}
                 </li>
               ))}
