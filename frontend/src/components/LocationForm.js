@@ -63,6 +63,7 @@ const LocationForm = ({
             id="start"
             value={formValues.start || ""}
             onChange={handleStartChange}
+            placeholder="Choose starting point..."
           />
           {startSuggestions.length > 0 && (
             <ul className="text-sm w-1/2 absolute z-10 mt-10 bg-white border border-gray-300 rounded-md shadow-lg">
@@ -106,6 +107,7 @@ const LocationForm = ({
             id="restaurant"
             value={formValues.restaurant || ""}
             onChange={handleRestaurantChange}
+            placeholder="Choose destination..."
           />
 
           {restaurantSuggestions.length > 0 && (
