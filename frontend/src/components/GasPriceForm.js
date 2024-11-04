@@ -36,7 +36,7 @@ const GasPriceForm = ({
           Enter gas price:{" "}
         </label>
         <input
-          className=" gasFormInput shadow "
+          className=" gasFormInput "
           type="number"
           id="gas"
           value={formValues.gas || ""}

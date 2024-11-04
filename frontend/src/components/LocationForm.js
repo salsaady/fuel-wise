@@ -43,7 +43,7 @@ const LocationForm = ({
             <MapPin className="size-5 text-red-600" />
           </label>
           <input
-            className="formInput shadow-lg"
+            className="formInput"
             type="text"
             id="restaurant"
             value={formValues.restaurant || ""}

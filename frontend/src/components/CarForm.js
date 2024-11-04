@@ -66,7 +66,7 @@ const CarForm = ({ formValues, handleChange, handleFuelConsumption }) => {
       className="bg-white mb-14 w-96 p-6 px-10 rounded-lg shadow-lg mx-auto space-y-4"
     >
       <h3 className="mb-7">Enter your vehicle details</h3>
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center">
         <label className="formLabel" htmlFor="year">
           Year:{" "}
         </label>
@@ -100,16 +100,15 @@ const CarForm = ({ formValues, handleChange, handleFuelConsumption }) => {
         /> */}
       </div>
       {selectedYear && (
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center">
           <label className="formLabel" htmlFor="make">
             Make:{" "}
           </label>
           {/* Make Dropdown */}
-
           <div>
             <select
               id="make"
-              className="carFormInput"
+              className="carFormInput "
               type="text"
               value={selectedMake}
               onChange={(e) => {
@@ -135,7 +134,7 @@ const CarForm = ({ formValues, handleChange, handleFuelConsumption }) => {
         </div>
       )}
       {selectedMake && (
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center">
           <label className="formLabel" htmlFor="flex justify-start model">
             Model:{" "}
           </label>
