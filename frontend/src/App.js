@@ -17,7 +17,6 @@ function App() {
   const [locationFormValues, setLocationFormValues] = useState({});
   const [gasPriceFormValues, setGasPriceFormValues] = useState({});
   const [costToDrive, setCostToDrive] = useState(null);
-  const [startLocation, setStartLocation] = useState(null);
 
   const handleCarFormChange = (e) => {
     setCarFormValues({ ...carFormValues, [e.target.id]: e.target.value });
@@ -61,28 +60,6 @@ function App() {
       );
     }
   }, []);
-
-  // const getUserLocation = () => {
-  //   if (navigator.geolocation) {
-  //     navigator.geolocation.getCurrentPosition(
-  //       async (position) => {
-  //         const latitude = position.coords.latitude;
-  //         const longitude = position.coords.longitude;
-  //         console.log(position);
-  //         setUserLocation({ latitude, longitude });
-  //         setLocationFormValues({
-  //           ...locationFormValues,
-  //           start: "Your location",
-  //         });
-  //       },
-  //       (error) => {
-  //         console.error("Unable to retrieve your location.", error);
-  //       }
-  //     );
-  //   } else {
-  //     console.log("Geolocation is not supported by this browser.");
-  //   }
-  // };
 
   // Function to handle distance calculation
   const handleGetDistance = async (e) => {
