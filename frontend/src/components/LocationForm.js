@@ -49,8 +49,9 @@ const LocationForm = ({
       onSubmit={handleGetDistance}
       className="w-96 p-6 px-10 rounded-lg bg-white shadow-lg mx-auto space-y-4"
     >
-      <h3 className="mb-7">Choose your route</h3>
-      <div className="">
+      {/* Start Location Input with Dropdown */}
+      <h3 className="">Choose your route</h3>
+      <div className="relative pb-6">
         <div className="flex justify-between">
           <label className="p-2 formLabel" htmlFor="start">
             <div className="flex items-center size-5">
@@ -61,43 +62,47 @@ const LocationForm = ({
             className="formInput"
             type="text"
             id="start"
+            placeholder="Choose starting location"
             value={formValues.start || ""}
             onChange={handleStartChange}
-            placeholder="Choose starting point..."
           />
-          {startSuggestions.length > 0 && (
-            <ul className="text-sm w-1/2 absolute z-10 mt-10 bg-white border border-gray-300 rounded-md shadow-lg">
-              {startSuggestions.map((suggestion, index) => (
-                <li
-                  key={index}
-                  className="flex items-center px-2 py-2 cursor-pointer hover:bg-gray-100"
-                  onClick={() => {
-                    handleChange({
-                      target: {
-                        id: "start",
-                        value: suggestion.description,
-                      },
-                    });
-                    setStartSuggestions([]);
-                  }}
-                >
-                  <MapPin className="flex-shrink-0 flex-grow-0 mr-3 w-5 h-5 text-slate-600" />
-                  {suggestion.description}
-                </li>
-              ))}
-            </ul>
-          )}
         </div>
-        <button
-          type="button"
-          onClick={getUserLocation}
-          className="mt-3 border border-black pr-2 pl-1 py-1 text-sm submit-btn shadow-lg hover:bg-slate-200 bg-white/80"
-        >
-          <LocateFixed className="size-5 mr-2 text-blue-600"></LocateFixed>Your
-          location
-        </button>
-
-        <div className="flex justify-between my-6">
+        {startSuggestions.length > 0 && (
+          <ul className="text-sm w-auto absolute z-10 mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
+            <li
+              className="flex items-center px-2 py-2 cursor-pointer hover:bg-gray-100"
+              onClick={() => {
+                getUserLocation();
+                setStartSuggestions([]);
+              }}
+            >
+              <LocateFixed className="mr-2 w-5 h-5 text-blue-600" />
+              Your location
+            </li>
+            <hr className="my-1 border-gray-200" />
+            {startSuggestions.map((suggestion, index) => (
+              <li
+                key={index}
+                className="flex items-center px-2 py-2 cursor-pointer hover:bg-gray-100"
+                onClick={() => {
+                  handleChange({
+                    target: {
+                      id: "start",
+                      value: suggestion.description,
+                    },
+                  });
+                  setStartSuggestions([]);
+                }}
+              >
+                <MapPin className="flex-shrink-0 flex-grow-0 mr-3 w-5 h-5 text-slate-600" />
+                {suggestion.description}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+      <div className="relative ">
+        <div className="flex justify-between">
           <label className="p-2 formLabel" htmlFor="restaurant">
             <MapPin className="size-5 text-red-600" />
           </label>
@@ -111,7 +116,7 @@ const LocationForm = ({
           />
 
           {restaurantSuggestions.length > 0 && (
-            <ul className="w-1/2 text-sm absolute z-10 mt-10 bg-white border border-gray-300 rounded-md shadow-lg">
+            <ul className="text-sm w-auto absolute z-10 mt-10 bg-white border border-gray-300 rounded-md shadow-lg">
               {restaurantSuggestions.map((suggestion, index) => (
                 <li
                   key={index}
