@@ -71,6 +71,15 @@ h3 {
   border-radius: 0.375rem;
 }
 
+.locationDropdownMenu {
+  font-size: 0.875rem /* 14px */;
+  line-height: 1.25rem /* 20px */;
+  width: auto;
+  position: absolute;
+  z-index: 10;
+  margin-top: 0.25rem /* 4px */;
+}
+
 .next-btn {
 }
 

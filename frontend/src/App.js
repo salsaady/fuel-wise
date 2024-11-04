@@ -17,7 +17,6 @@ function App() {
   const [locationFormValues, setLocationFormValues] = useState({});
   const [gasPriceFormValues, setGasPriceFormValues] = useState({});
   const [costToDrive, setCostToDrive] = useState(null);
-  const [startLocation, setStartLocation] = useState(null);
 
   const handleCarFormChange = (e) => {
     setCarFormValues({ ...carFormValues, [e.target.id]: e.target.value });
@@ -39,38 +38,28 @@ function App() {
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocation({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          });
+        async (position) => {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          setUserLocation({ latitude, longitude });
+          // Send user's location to the backend
+          try {
+            await axios.post("http://127.0.0.1:5000/user_location", {
+              latitude,
+              longitude,
+            });
+            console.log("User location sent to backend:", {
+              latitude,
+              longitude,
+            });
+          } catch (error) {
+            console.error("Error sending user location to backend:", error);
+          }
         },
         (error) => console.error("Error getting location:", error)
       );
     }
   }, []);
-
-  const getUserLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const latitude = position.coords.latitude;
-          const longitude = position.coords.longitude;
-          console.log(position);
-          setUserLocation({ latitude, longitude });
-          setLocationFormValues({
-            ...locationFormValues,
-            start: "Your location",
-          });
-        },
-        (error) => {
-          console.error("Unable to retrieve your location.", error);
-        }
-      );
-    } else {
-      console.log("Geolocation is not supported by this browser.");
-    }
-  };
 
   // Function to handle distance calculation
   const handleGetDistance = async (e) => {
@@ -212,7 +201,6 @@ function App() {
               formValues={locationFormValues}
               handleChange={handleLocationFormChange}
               handleGetDistance={handleGetDistance}
-              getUserLocation={getUserLocation}
             />
           </section>
         )}
@@ -251,7 +239,7 @@ function App() {
             {costToDrive && (
               <span className="text-center text-2xl">
                 <p className="font-bold text-center">${costToDrive}</p>
-                <p className="text-xlg"> </p>
+                <p className="text-xlg"></p>
               </span>
             )}
           </div>

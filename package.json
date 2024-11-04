@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "lodash.debounce": "^4.0.8",
     "pip": "^0.0.1"
   },
   "devDependencies": {
