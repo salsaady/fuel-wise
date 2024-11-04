@@ -6,6 +6,8 @@ const CarForm = ({ formValues, handleChange, handleFuelConsumption }) => {
   const [selectedYear, setSelectedYear] = useState("");
   const [makes, setMakes] = useState([]);
   const [selectedMake, setSelectedMake] = useState("");
+  const [models, setModels] = useState([]);
+  const [selectedModel, setSelectedModel] = useState("");
 
   useEffect(
     () => {
@@ -39,6 +41,24 @@ const CarForm = ({ formValues, handleChange, handleFuelConsumption }) => {
     };
     fetchMakes();
   }, [selectedYear]);
+
+  useEffect(() => {
+    const fetchModels = async () => {
+      try {
+        console.log(selectedMake);
+        const response = await axios.post("http://127.0.0.1:5000/models", {
+          year: selectedYear,
+          make: selectedMake,
+        });
+        console.log(response.data);
+        setModels(response.data); // Assuming setMakes updates the dropdown options
+        // console.log(models);
+      } catch (error) {
+        console.error("Error fetching makes", error);
+      }
+    };
+    fetchModels();
+  }, [selectedMake]);
 
   return (
     <form
@@ -114,19 +134,41 @@ const CarForm = ({ formValues, handleChange, handleFuelConsumption }) => {
         /> */}
         </div>
       )}
-
-      <div className="flex justify-between">
-        <label className="formLabel" htmlFor="flex justify-start model">
-          Model:{" "}
-        </label>
-        <input
+      {selectedMake && (
+        <div className="flex justify-between">
+          <label className="formLabel" htmlFor="flex justify-start model">
+            Model:{" "}
+          </label>
+          {/* Model Dropdown */}
+          <div>
+            <select
+              id="model"
+              className="carFormInput"
+              type="text"
+              value={selectedModel}
+              onChange={(e) => {
+                setSelectedModel(e.target.value);
+                handleChange(e);
+              }}
+            >
+              <option value=""></option>
+              {models.map((model, idx) => (
+                <option key={idx} value={model}>
+                  {model}
+                </option>
+              ))}
+            </select>
+          </div>
+          {/* <input
           className="flex justify-end carFormInput shadow ml-2"
           type="text"
           id="model"
           value={formValues.model || ""}
           onChange={handleChange}
-        />
-      </div>
+        /> */}
+        </div>
+      )}
+
       <button
         type="submit"
         className="px-3 p-1 shadow-md hover:bg-sky-600/40 bg-sky-600/50 font-medium submit-btn"
