@@ -8,7 +8,6 @@ const LocationForm = ({
   formValues,
   handleChange,
   handleGetDistance,
-  getUserLocation,
 }) => {
   const [startSuggestions, setStartSuggestions] = useState([]);
   const [restaurantSuggestions, setRestaurantSuggestions] = useState([]);
@@ -73,7 +72,12 @@ const LocationForm = ({
             <li
               className="flex w-72 mr-4 items-center px-2 py-2 cursor-pointer hover:bg-gray-100"
               onClick={() => {
-                getUserLocation();
+                handleChange({
+                  target: {
+                    id: "start",
+                    value: "Your location",
+                  },
+                });
                 setStartSuggestions([]);
               }}
             >

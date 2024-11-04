@@ -62,27 +62,27 @@ function App() {
     }
   }, []);
 
-  const getUserLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const latitude = position.coords.latitude;
-          const longitude = position.coords.longitude;
-          console.log(position);
-          setUserLocation({ latitude, longitude });
-          setLocationFormValues({
-            ...locationFormValues,
-            start: "Your location",
-          });
-        },
-        (error) => {
-          console.error("Unable to retrieve your location.", error);
-        }
-      );
-    } else {
-      console.log("Geolocation is not supported by this browser.");
-    }
-  };
+  // const getUserLocation = () => {
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       async (position) => {
+  //         const latitude = position.coords.latitude;
+  //         const longitude = position.coords.longitude;
+  //         console.log(position);
+  //         setUserLocation({ latitude, longitude });
+  //         setLocationFormValues({
+  //           ...locationFormValues,
+  //           start: "Your location",
+  //         });
+  //       },
+  //       (error) => {
+  //         console.error("Unable to retrieve your location.", error);
+  //       }
+  //     );
+  //   } else {
+  //     console.log("Geolocation is not supported by this browser.");
+  //   }
+  // };
 
   // Function to handle distance calculation
   const handleGetDistance = async (e) => {
@@ -224,7 +224,6 @@ function App() {
               formValues={locationFormValues}
               handleChange={handleLocationFormChange}
               handleGetDistance={handleGetDistance}
-              getUserLocation={getUserLocation}
             />
           </section>
         )}
@@ -263,7 +262,7 @@ function App() {
             {costToDrive && (
               <span className="text-center text-2xl">
                 <p className="font-bold text-center">${costToDrive}</p>
-                <p className="text-xlg"> (roundtrip)</p>
+                <p className="text-xlg"></p>
               </span>
             )}
           </div>
