@@ -46,7 +46,7 @@ def autocomplete():
     params = {
         "input": input_text,
         "key": API_KEY,
-        "types": "establishment",
+        "types": ["geocode","establishment"],
         "location": location,
         "radius": 5000,
         # "strictbounds": True,
