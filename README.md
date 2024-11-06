@@ -32,7 +32,7 @@ A web application that compares the cost of driving to a location. The app calcu
    npm start
 
 ### Usage
-1. Open the app in your browser (usually available at http://localhost:3000).
+1. Open the app in your browser (available at http://localhost:3000).
 2. Input your vehicle's year, make, and model in the form provided.
 3. The app will retrieve the fuel consumption and gas price to calculate the driving cost.
 
