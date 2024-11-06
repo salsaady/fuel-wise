@@ -7,19 +7,17 @@ import xml.etree.ElementTree as ET
 from flask_cors import cross_origin
 from services import *
 from utils import calculate_cost_to_drive, convert_mpg_to_l_100km
+import os
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 #CORS(app)  # Enable CORS to allow requests from React
 CORS(app, origins=["http://localhost:3000"])
 
-API_KEY = 'AIzaSyDE6Z6t0y_yj248Tq-o4RsBqAdTrIzl8Mc'
+load_dotenv()
+API_KEY = os.getenv('MAPS_API_KEY')
 
 map_client = googlemaps.Client(API_KEY)
-
-work_place_address = '1 Market St, San Francisco, CA'
-other_address = 'Ottawa, ON'
-response = map_client.distance_matrix(work_place_address, other_address)
-response = map_client.geocode(work_place_address)
 
 @app.route('/user_location', methods=['POST'])
 def receive_user_location():
