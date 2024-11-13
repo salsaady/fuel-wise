@@ -44,7 +44,7 @@ function App() {
           setUserLocation({ latitude, longitude });
           // Send user's location to the backend
           try {
-            await axios.post("http://127.0.0.1:5000/user_location", {
+            await axios.post("https://fuel-wise.onrender.com/user_location", {
               latitude,
               longitude,
             });
@@ -72,7 +72,7 @@ function App() {
     console.log("starting location is: ", startLocation);
 
     try {
-      const response = await axios.post("http://127.0.0.1:5000/get_distance", {
+      const response = await axios.post("https://fuel-wise.onrender.com/get_distance", {
         user_location: startLocation,
         restaurant_location: locationFormValues.restaurant,
       });
@@ -88,7 +88,7 @@ function App() {
   const handleGetPostalCode = async () => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:5000/get_postal_code",
+        "https://fuel-wise.onrender.com/get_postal_code",
         {
           longitude: userLocation.longitude,
           latitude: userLocation.latitude,
@@ -107,7 +107,7 @@ function App() {
 
   const fetchGasPrice = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:5000/get_gas_price");
+      const response = await axios.get("https://fuel-wise.onrender.com/get_gas_price");
       setGasPrice(response.data.gas_price);
       console.log(gasPrice);
     } catch (error) {
@@ -119,7 +119,7 @@ function App() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://127.0.0.1:5000/get_fuel_consumption",
+        "https://fuel-wise.onrender.com/get_fuel_consumption",
         {
           year: carFormValues.year,
           make: carFormValues.make,
@@ -137,7 +137,7 @@ function App() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://127.0.0.1:5000/calculate_cost",
+        "https://fuel-wise.onrender.com/calculate_cost",
         {
           distance: distance,
           gasPrice: gasPrice,

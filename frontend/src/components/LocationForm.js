@@ -15,9 +15,12 @@ const LocationForm = ({
   // Fetch suggestions based on input query
   const fetchSuggestions = async (query, setSuggestions) => {
     try {
-      const response = await axios.get("http://127.0.0.1:5000/autocomplete", {
-        params: { input: query },
-      });
+      const response = await axios.get(
+        "https://fuel-wise.onrender.com/autocomplete",
+        {
+          params: { input: query },
+        }
+      );
       setSuggestions(response.data);
     } catch (error) {
       console.error("Error fetching suggestions:", error);
