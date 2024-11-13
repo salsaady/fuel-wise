@@ -15,7 +15,7 @@ app = Flask(__name__)
 CORS(app, origins=["http://localhost:3000"])
 
 load_dotenv()
-API_KEY = os.getenv('MAPS_API_KEY')
+API_KEY = os.getenv('API_KEY')
 
 map_client = googlemaps.Client(API_KEY)
 
