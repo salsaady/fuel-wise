@@ -5,6 +5,8 @@ import CarForm from "./components/CarForm"; // Importing the CarForm component
 import LocationForm from "./components/LocationForm";
 import GasPriceForm from "./components/GasPriceForm";
 import { ArrowRight } from "lucide-react";
+const BACKEND_URL =
+  process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
 
 function App() {
   const [distance, setDistance] = useState(null);
@@ -44,7 +46,7 @@ function App() {
           setUserLocation({ latitude, longitude });
           // Send user's location to the backend
           try {
-            await axios.post("https://fuel-wise.onrender.com/user_location", {
+            await axios.post(`${BACKEND_URL}/user_location`, {
               latitude,
               longitude,
             });
@@ -72,7 +74,7 @@ function App() {
     console.log("starting location is: ", startLocation);
 
     try {
-      const response = await axios.post("https://fuel-wise.onrender.com/get_distance", {
+      const response = await axios.post(`${BACKEND_URL}/get_distance`, {
         user_location: startLocation,
         restaurant_location: locationFormValues.restaurant,
       });
@@ -87,13 +89,10 @@ function App() {
 
   const handleGetPostalCode = async () => {
     try {
-      const response = await axios.post(
-        "https://fuel-wise.onrender.com/get_postal_code",
-        {
-          longitude: userLocation.longitude,
-          latitude: userLocation.latitude,
-        }
-      );
+      const response = await axios.post(`${BACKEND_URL}/get_postal_code`, {
+        longitude: userLocation.longitude,
+        latitude: userLocation.latitude,
+      });
       setPostalCode(response.data.postal_code);
     } catch (error) {
       console.error("Error getting postal code:", error);
@@ -107,7 +106,7 @@ function App() {
 
   const fetchGasPrice = async () => {
     try {
-      const response = await axios.get("https://fuel-wise.onrender.com/get_gas_price");
+      const response = await axios.get(`${BACKEND_URL}/get_gas_price`);
       setGasPrice(response.data.gas_price);
       console.log(gasPrice);
     } catch (error) {
@@ -118,14 +117,11 @@ function App() {
   const handleFuelConsumption = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "https://fuel-wise.onrender.com/get_fuel_consumption",
-        {
-          year: carFormValues.year,
-          make: carFormValues.make,
-          model: carFormValues.model,
-        }
-      );
+      const response = await axios.post(`${BACKEND_URL}/get_fuel_consumption`, {
+        year: carFormValues.year,
+        make: carFormValues.make,
+        model: carFormValues.model,
+      });
       // Set the fuel consumption from the response
       setFuelConsumption(response.data.fuel_consumption);
     } catch (error) {
@@ -136,14 +132,11 @@ function App() {
   const calculateCost = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "https://fuel-wise.onrender.com/calculate_cost",
-        {
-          distance: distance,
-          gasPrice: gasPrice,
-          fuelConsumption: fuelConsumption,
-        }
-      );
+      const response = await axios.post(`${BACKEND_URL}/calculate_cost`, {
+        distance: distance,
+        gasPrice: gasPrice,
+        fuelConsumption: fuelConsumption,
+      });
       // Set the fuel consumption from the response
       setCostToDrive(response.data.cost_to_drive);
       console.log("this is the final cost", costToDrive);
