@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 
 app = Flask(__name__)
 #CORS(app)  # Enable CORS to allow requests from React
-CORS(app, origins=["http://localhost:3000"])
+CORS(app, origins=["https://fuel-wise-1.onrender.com"])
 
 load_dotenv()
 API_KEY = os.getenv('API_KEY')
