@@ -5,8 +5,7 @@ import CarForm from "./components/CarForm"; // Importing the CarForm component
 import LocationForm from "./components/LocationForm";
 import GasPriceForm from "./components/GasPriceForm";
 import { ArrowRight } from "lucide-react";
-const BACKEND_URL =
-  process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 function App() {
   const [distance, setDistance] = useState(null);

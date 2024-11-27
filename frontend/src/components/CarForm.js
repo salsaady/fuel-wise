@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const CarForm = ({ formValues, handleChange, handleFuelConsumption }) => {
   const [years, setYears] = useState([]);
   const [selectedYear, setSelectedYear] = useState("");
@@ -12,9 +12,7 @@ const CarForm = ({ formValues, handleChange, handleFuelConsumption }) => {
   useEffect(
     () => {
       const fetchYears = async () => {
-        const response = await axios.get(
-          "https://fuel-wise.onrender.com/years"
-        );
+        const response = await axios.get(`${BACKEND_URL}/years`);
         setYears(response.data);
       };
 
@@ -32,12 +30,9 @@ const CarForm = ({ formValues, handleChange, handleFuelConsumption }) => {
     const fetchMakes = async () => {
       try {
         console.log(selectedYear);
-        const response = await axios.post(
-          "https://fuel-wise.onrender.com/makes",
-          {
-            year: selectedYear,
-          }
-        );
+        const response = await axios.post(`${BACKEND_URL}/makes`, {
+          year: selectedYear,
+        });
         console.log(response.data);
         setMakes(response.data); // Assuming setMakes updates the dropdown options
       } catch (error) {
@@ -51,13 +46,10 @@ const CarForm = ({ formValues, handleChange, handleFuelConsumption }) => {
     const fetchModels = async () => {
       try {
         console.log(selectedMake);
-        const response = await axios.post(
-          "https://fuel-wise.onrender.com/models",
-          {
-            year: selectedYear,
-            make: selectedMake,
-          }
-        );
+        const response = await axios.post(`${BACKEND_URL}/models`, {
+          year: selectedYear,
+          make: selectedMake,
+        });
         console.log(response.data);
         setModels(response.data); // Assuming setMakes updates the dropdown options
         // console.log(models);

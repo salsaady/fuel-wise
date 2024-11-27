@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { LocateFixed, Circle, MapPin } from "lucide-react";
 import axios from "axios";
 import debounce from "lodash.debounce";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const LocationForm = ({
   onNext,
@@ -15,12 +16,9 @@ const LocationForm = ({
   // Fetch suggestions based on input query
   const fetchSuggestions = async (query, setSuggestions) => {
     try {
-      const response = await axios.get(
-        "https://fuel-wise.onrender.com/autocomplete",
-        {
-          params: { input: query },
-        }
-      );
+      const response = await axios.get(`${BACKEND_URL}/autocomplete`, {
+        params: { input: query },
+      });
       setSuggestions(response.data);
     } catch (error) {
       console.error("Error fetching suggestions:", error);
