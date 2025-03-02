@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-
+import axios from "axios";
 /*
 distance
 gasPrice
@@ -13,6 +13,7 @@ endLocation
 finalCost
 
 */
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const FormContext = createContext({
   distance: null,
