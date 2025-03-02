@@ -10,14 +10,7 @@ import os
 from dotenv import load_dotenv
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS to allow requests from React
-#print("FRONTEND_URL:", os.getenv('FRONTEND_URL'))
-
-#CORS(app, origins=[os.getenv('FRONTEND_URL')])
-#app.config['CORS_HEADERS'] = 'Content-Type'
-#API_KEY = os.getenv('API_KEY')
-
-#map_client = googlemaps.Client(API_KEY)
+CORS(app, origins=[os.getenv('FRONTEND_URL')])  # Enable CORS to allow requests from React
 
 @app.route('/check')
 #@cross_origin()

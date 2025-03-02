@@ -4,7 +4,9 @@ import "./App.css";
 import CarForm from "./components/CarForm"; // Importing the CarForm component
 import LocationForm from "./components/LocationForm";
 import GasPriceForm from "./components/GasPriceForm";
+import TestComponent from "./components/TestComponent";
 import { ArrowRight } from "lucide-react";
+import { useForm } from "./contexts/FormContext";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 function App() {
@@ -18,6 +20,8 @@ function App() {
   const [locationFormValues, setLocationFormValues] = useState({});
   const [gasPriceFormValues, setGasPriceFormValues] = useState({});
   const [costToDrive, setCostToDrive] = useState(null);
+
+  const { fetchGasPrice } = useForm();
 
   const handleCarFormChange = (e) => {
     setCarFormValues({ ...carFormValues, [e.target.id]: e.target.value });
@@ -73,10 +77,13 @@ function App() {
     console.log("starting location is: ", startLocation);
 
     try {
+      // const distance = await calculateDistance(startLocation, locationFormValues.restaurant)
+      // setDistance(distance)
       const response = await axios.post(`${BACKEND_URL}/get_distance`, {
         user_location: startLocation,
         restaurant_location: locationFormValues.restaurant,
       });
+
       await handleGetPostalCode();
 
       console.log(restaurantLocation);
@@ -101,16 +108,6 @@ function App() {
     e.preventDefault();
     const manualGasPrice = Number(gasPriceFormValues.gas); // Ensure the value is a number
     setGasPrice(manualGasPrice);
-  };
-
-  const fetchGasPrice = async () => {
-    try {
-      const response = await axios.get(`${BACKEND_URL}/get_gas_price`);
-      setGasPrice(response.data.gas_price);
-      console.log(gasPrice);
-    } catch (error) {
-      console.error("Error getting gas price", error);
-    }
   };
 
   const handleFuelConsumption = async (e) => {
@@ -178,6 +175,7 @@ function App() {
           Calculate the fuel cost of your journey quickly and easily. Enter your
           details, and let us do the rest!
         </p>
+        <TestComponent />
         {!showLocationForm && (
           <button
             onClick={handleSetShowLocationForm}
