@@ -1,25 +1,31 @@
 from pprint import pprint
 from flask import Flask, request, jsonify
-from flask_cors import CORS
 import googlemaps
 import requests
 import xml.etree.ElementTree as ET
-from flask_cors import cross_origin
+from flask_cors import CORS, cross_origin
 from services import *
 from utils import calculate_cost_to_drive, convert_mpg_to_l_100km
 import os
 from dotenv import load_dotenv
 
 app = Flask(__name__)
-#CORS(app)  # Enable CORS to allow requests from React
-CORS(app, origins=[os.getenv('FRONTEND_URL')])
+CORS(app)  # Enable CORS to allow requests from React
+#print("FRONTEND_URL:", os.getenv('FRONTEND_URL'))
 
-load_dotenv()
-API_KEY = os.getenv('API_KEY')
+#CORS(app, origins=[os.getenv('FRONTEND_URL')])
+#app.config['CORS_HEADERS'] = 'Content-Type'
+#API_KEY = os.getenv('API_KEY')
 
-map_client = googlemaps.Client(API_KEY)
+#map_client = googlemaps.Client(API_KEY)
+
+@app.route('/check')
+#@cross_origin()
+def test():
+    return jsonify({"message": "Hello World"})
 
 @app.route('/user_location', methods=['POST'])
+# @cross_origin()
 def receive_user_location():
     global user_location
     data = request.get_json()
@@ -33,6 +39,7 @@ def receive_user_location():
         return jsonify({"error": "Invalid location data"}), 400
     
 @app.route('/autocomplete', methods=['GET'])
+# @cross_origin()
 def autocomplete():
     input_text = request.args.get('input')
     if not input_text:
@@ -64,7 +71,7 @@ def autocomplete():
 ### Returns distance between the two locations, the user's location
 # and the restaurant locaton ###
 @app.route('/get_distance', methods=['POST'])
-@cross_origin()  # Enable CORS for this specific route
+# @cross_origin()  # Enable CORS for this specific route
 def get_distance():
     data = request.json
     user_location = data.get('user_location')
@@ -78,7 +85,7 @@ def get_distance():
     
 
 @app.route('/get_postal_code', methods=['POST'])
-@cross_origin()  # Enable CORS for this specific route
+# @cross_origin()  # Enable CORS for this specific route
 def get_postal_code():
     data = request.json
     user_longitude = data.get('longitude')
@@ -92,6 +99,7 @@ def get_postal_code():
         return jsonify({'error': str(e)}), 500
 
 @app.route('/get_fuel_consumption', methods=['POST'])
+# @cross_origin()
 def get_fuel_consumption():
     data = request.get_json()
     try:
@@ -102,12 +110,14 @@ def get_fuel_consumption():
 
 ### This is a GET route that returns gas price data. ###
 @app.route('/get_gas_price', methods=['GET'])
+# @cross_origin()
 def get_gas_price():
     # Example gas price data
     gas_price = get_gas_price_data(postal_code)
     return jsonify({'gas_price': gas_price}), 200
 
 @app.route('/years', methods=['GET'])
+# @cross_origin()
 def get_model_years():
     years = []
     model_years_url = "https://www.fueleconomy.gov/ws/rest/vehicle/menu/year"
@@ -119,6 +129,7 @@ def get_model_years():
 
 
 @app.route('/makes', methods=['POST'])
+# @cross_origin()
 def get_vehicle_makes():
     data = request.get_json()
     year = data.get('year')
@@ -135,6 +146,7 @@ def get_vehicle_makes():
     return jsonify(makes)
 
 @app.route('/models', methods=['POST'])
+# @cross_origin()
 def get_vehicle_models():
     data = request.get_json()
     year = data.get('year')
@@ -157,11 +169,11 @@ def get_vehicle_models():
 # then calculate the driving cost and compare it to the delivery fee. 
 # It returns the calculated costs and a comparison result in JSON format. ###
 @app.route('/calculate_cost', methods=['POST'])
-@cross_origin()  # Enable CORS for this specific route
+# @cross_origin()  # Enable CORS for this specific route
 def calculate_cost():
     data = request.json
     result = calculate_cost_to_drive(data)
     return jsonify(result)
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# if __name__ == '__main__':
+#     app.run(host='localhost', port=5000, debug=True)

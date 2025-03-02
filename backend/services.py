@@ -3,9 +3,11 @@ from flask import jsonify
 import googlemaps
 import requests
 import xml.etree.ElementTree as ET
+import os
+from dotenv import load_dotenv
 
-
-API_KEY = 'AIzaSyDE6Z6t0y_yj248Tq-o4RsBqAdTrIzl8Mc'
+load_dotenv()
+API_KEY = os.getenv('API_KEY')
 map_client = googlemaps.Client(API_KEY)
 
 def get_distance_from_google_maps(user_location, restaurant_location):
