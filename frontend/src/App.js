@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "./App.css";
-import CarForm from "./components/CarForm"; 
+import CarForm from "./components/CarForm";
 import LocationForm from "./components/LocationForm";
 import GasPriceForm from "./components/GasPriceForm";
 import TripSummary from "./components/TripSummary";
@@ -10,9 +10,18 @@ import { useForm } from "./contexts/FormContext";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 function App() {
-
-  const { distance, gasPrice, startLocation, fuelConsumption, finalCost, setDistance, setGasPrice, setStartLocation, setFuelConsumption, setFinalCost } =
-    useForm();
+  const {
+    distance,
+    gasPrice,
+    startLocation,
+    fuelConsumption,
+    finalCost,
+    setDistance,
+    setGasPrice,
+    setStartLocation,
+    setFuelConsumption,
+    setFinalCost,
+  } = useForm();
 
   // On mount, get user geolocation
   useEffect(() => {
@@ -22,20 +31,6 @@ function App() {
           const latitude = position.coords.latitude;
           const longitude = position.coords.longitude;
           setStartLocation({ latitude, longitude });
-
-          // Send user's location to the backend
-          try {
-            await axios.post(`${BACKEND_URL}/user_location`, {
-              latitude,
-              longitude,
-            });
-            console.log("User location sent to backend:", {
-              latitude,
-              longitude,
-            });
-          } catch (error) {
-            console.error("Error sending user location to backend:", error);
-          }
         },
         (error) => console.error("Error getting location:", error)
       );
@@ -82,8 +77,8 @@ function App() {
             <ArrowRight className="ml-2 transition-transform transform hover:translate-x-1"></ArrowRight>
           </button>
         )}
-        {showLocationForm && <LocationForm/> }
-        {distance && <CarForm/>}
+        {showLocationForm && <LocationForm />}
+        {distance && <CarForm />}
         {fuelConsumption && <GasPriceForm className="mb-8" />}
         {gasPrice && (
           <TripSummary

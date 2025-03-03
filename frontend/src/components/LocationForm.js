@@ -10,18 +10,28 @@ const LocationForm = () => {
   const [startSuggestions, setStartSuggestions] = useState([]);
   const [destinationSuggestions, setDestinationSuggestions] = useState([]);
 
-  const { setDistance, startLocation, endLocation, setStartLocation, setEndLocation } = useForm();
-  
+  const {
+    setDistance,
+    startLocation,
+    endLocation,
+    setStartLocation,
+    setEndLocation,
+  } = useForm();
+
   const [localValues, setLocalValues] = useState({
-      start: "",
-      destination: "",
-    });
+    start: "",
+    destination: "",
+  });
 
   // 1. Fetch suggestions based on input query
   const fetchSuggestions = async (query, setSuggestions) => {
     try {
       const response = await axios.get(`${BACKEND_URL}/autocomplete`, {
-        params: { input: query },
+        params: {
+          input: query,
+          latitude: startLocation.latitude,
+          longitude: startLocation.longitude,
+        },
       });
       setSuggestions(response.data);
     } catch (error) {
@@ -49,7 +59,7 @@ const LocationForm = () => {
     setLocalValues((prev) => ({ ...prev, destination: value }));
     debouncedFetchDestinationSuggestions(value);
   };
-  
+
   // 3. When a suggestion is selected, update both local values and context.
   const handleSelectStart = (value) => {
     setLocalValues((prev) => ({ ...prev, start: value }));
@@ -80,7 +90,6 @@ const LocationForm = () => {
       console.error("Error getting distance:", error);
     }
   }
-
 
   return (
     <form
@@ -153,7 +162,9 @@ const LocationForm = () => {
                 <li
                   key={index}
                   className="flex  items-center px-2 py-2 cursor-pointer hover:bg-gray-100"
-                  onClick={()=>handleSelectDestination(suggestion.description)}
+                  onClick={() =>
+                    handleSelectDestination(suggestion.description)
+                  }
                 >
                   <MapPin className="flex-shrink-0 flex-grow-0 mr-3 w-5 h-5 text-slate-600" />
                   {suggestion.description}

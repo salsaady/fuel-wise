@@ -1,6 +1,5 @@
 from pprint import pprint
 from flask import Flask, request, jsonify
-import googlemaps
 import requests
 import xml.etree.ElementTree as ET
 from flask_cors import CORS, cross_origin
@@ -8,34 +7,20 @@ from services import *
 from utils import calculate_cost_to_drive, convert_mpg_to_l_100km
 import os
 from dotenv import load_dotenv
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app, origins=[os.getenv('FRONTEND_URL')])  # Enable CORS to allow requests from React
 
-@app.route('/check')
-def test():
-    return jsonify({"message": "Hello World"})
-
-@app.route('/user_location', methods=['POST'])
-def receive_user_location():
-    global user_location
-    data = request.get_json()
-    latitude = data.get('latitude')
-    longitude = data.get('longitude')
-    if latitude and longitude:
-        user_location = {"latitude": latitude, "longitude": longitude}
-        print("Received user location:", latitude, longitude)
-        return jsonify({"status": "Location received"}), 200
-    else:
-        return jsonify({"error": "Invalid location data"}), 400
-    
 @app.route('/autocomplete', methods=['GET'])
 def autocomplete():
     input_text = request.args.get('input')
+    latitude = request.args.get('latitude')
+    longitude = request.args.get('longitude')
     if not input_text:
         return jsonify({"error": "No input provided"}), 400
     
-    location = f"{user_location['latitude']},{user_location['longitude']}"
+    location = f"{latitude},{longitude}"
 
     url = "https://maps.googleapis.com/maps/api/place/autocomplete/json"
     params = {
@@ -55,17 +40,15 @@ def autocomplete():
     print(suggestions)
     return jsonify(suggestions)
 
-
-
 ### Returns distance between the two locations, the user's location
 # and the destination locaton ###
 @app.route('/get_distance', methods=['POST'])
 def get_distance():
     data = request.json
-    user_location = data.get('user_location')
+    start_location = data.get('start_location')
     dest_location = data.get('destination_location')
     try:
-        distance_km = get_distance_from_google_maps(user_location, dest_location)
+        distance_km = get_distance_from_google_maps(start_location, dest_location)
         return jsonify({'distance_km': distance_km}), 200
     
     except Exception as e:
