@@ -20,7 +20,7 @@ def test():
 @app.route('/user_location', methods=['POST'])
 # @cross_origin()
 def receive_user_location():
-    global user_location
+    #global user_location
     data = request.get_json()
     latitude = data.get('latitude')
     longitude = data.get('longitude')
@@ -34,11 +34,11 @@ def receive_user_location():
 @app.route('/autocomplete', methods=['GET'])
 # @cross_origin()
 def autocomplete():
-    input_text = request.args.get('input')
+    input_text = request.args.get('input', 'startLocation')
     if not input_text:
         return jsonify({"error": "No input provided"}), 400
     
-    location = f"{user_location['latitude']},{user_location['longitude']}"
+    location = f"{startLocation['latitude']},{user_location['longitude']}"
 
     url = "https://maps.googleapis.com/maps/api/place/autocomplete/json"
     params = {
@@ -105,9 +105,17 @@ def get_fuel_consumption():
 @app.route('/get_gas_price', methods=['GET'])
 # @cross_origin()
 def get_gas_price():
-    # Example gas price data
-    gas_price = get_gas_price_data(postal_code)
-    return jsonify({'gas_price': gas_price}), 200
+    data = request.get_json() 
+
+    user_longitude = data.get('longitude')
+    user_latitude = data.get('latitude')
+    print(user_longitude, user_latitude)
+    try:
+        postal_code = get_postal_code_data((user_latitude, user_longitude))
+        gas_price = get_gas_price_data(postal_code)
+        return jsonify({'gas_price': gas_price}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/years', methods=['GET'])
 # @cross_origin()

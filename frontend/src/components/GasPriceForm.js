@@ -1,25 +1,38 @@
 import React from "react";
 import { Navigation } from "lucide-react";
+import { useForm } from "../contexts/FormContext";
+import { getLiveGasPrice } from "../lib/utils";
 
-const GasPriceForm = ({
-  formValues,
-  handleChange,
-  fetchGasPrice,
-  gasPrice,
-  enterGasPrice,
-}) => {
+// const GasPriceForm = ({
+//   formValues,
+//   handleChange,
+//   fetchGasPrice,
+//   gasPrice,
+//   enterGasPrice,
+// }) => {
+const GasPriceForm = () => {
+  const { startLocation, gasPrice, setGasPrice } = useForm();
+
+  async function handleUseCurrentLocationGasPrice() {
+    const locationGasPrice = await getLiveGasPrice(startLocation);
+    setGasPrice(locationGasPrice);
+  }
+
+  function handleChangeGasPrice(e) {
+    setGasPrice(e.target.valueAsNumber);
+  }
+
   return (
     <form
-      onSubmit={enterGasPrice}
+      // onSubmit={enterGasPrice}
       className="bg-white mb-14 w-96 p-6 px-10 rounded-lg shadow-lg mx-auto space-y-4"
     >
       <h3 className="mb-7">Determine gas price</h3>
 
       <button
-        type=" pr-2 pl-1 py-1 text-sm submit-btn shadow-lg hover:bg-white/100  bg-white/80"
-        onClick={() => {
-          fetchGasPrice();
-        }}
+        // type="pr-2 pl-1 py-1 text-sm submit-btn shadow-lg hover:bg-white/100  bg-white/80"
+        type="button"
+        onClick={handleUseCurrentLocationGasPrice}
         className="hover:bg-slate-200 border border-black pr-2 pl-1 py-1 text-sm submit-btn shadow-lg bg-white/80"
       >
         <div className="px-1 flex justify-between items-center ">
@@ -36,11 +49,13 @@ const GasPriceForm = ({
           Enter gas price:{" "}
         </label>
         <input
-          className=" gasFormInput"
+          className="gasFormInput"
           type="number"
           id="gas"
-          value={formValues.gas || ""}
-          onChange={handleChange}
+          value={gasPrice}
+          onChange={handleChangeGasPrice}
+          // value={formValues.gas || ""}
+          // onChange={handleChange}
         />
       </div>
 

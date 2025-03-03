@@ -7,21 +7,21 @@ import GasPriceForm from "./components/GasPriceForm";
 import TestComponent from "./components/TestComponent";
 import { ArrowRight } from "lucide-react";
 import { useForm } from "./contexts/FormContext";
+import { calculateDistance } from "./lib/utils";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 function App() {
-  const [distance, setDistance] = useState(null);
-  const [gasPrice, setGasPrice] = useState(null);
   const [fuelConsumption, setFuelConsumption] = useState(null);
-  const [userLocation, setUserLocation] = useState(null);
-  const [restaurantLocation, setRestaurantLocation] = useState(null);
+  const [userLocation, setUserLocation] = useState(null); //replace with startLocation
+  const [restaurantLocation, setRestaurantLocation] = useState(null); //replace with endLocation
   const [postalCode, setPostalCode] = useState(null);
-  const [carFormValues, setCarFormValues] = useState({});
-  const [locationFormValues, setLocationFormValues] = useState({});
-  const [gasPriceFormValues, setGasPriceFormValues] = useState({});
+  const [carFormValues, setCarFormValues] = useState({}); //move to CarForm
+  const [locationFormValues, setLocationFormValues] = useState({}); //move to locationForm
+  // const [gasPriceFormValues, setGasPriceFormValues] = useState({});
   const [costToDrive, setCostToDrive] = useState(null);
 
-  const { fetchGasPrice } = useForm();
+  const { distance, gasPrice, setDistance, setGasPrice, setStartLocation } =
+    useForm();
 
   const handleCarFormChange = (e) => {
     setCarFormValues({ ...carFormValues, [e.target.id]: e.target.value });
@@ -33,12 +33,12 @@ function App() {
     });
   };
 
-  const handleGasPriceFormChange = (e) => {
-    setGasPriceFormValues({
-      ...gasPriceFormValues,
-      [e.target.id]: Number(e.target.value),
-    });
-  };
+  // const handleGasPriceFormChange = (e) => {
+  //   setGasPriceFormValues({
+  //     ...gasPriceFormValues,
+  //     [e.target.id]: Number(e.target.value),
+  //   });
+  // };
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -47,19 +47,22 @@ function App() {
           const latitude = position.coords.latitude;
           const longitude = position.coords.longitude;
           setUserLocation({ latitude, longitude });
+
+          setStartLocation({ latitude, longitude });
+
           // Send user's location to the backend
-          try {
-            await axios.post(`${BACKEND_URL}/user_location`, {
-              latitude,
-              longitude,
-            });
-            console.log("User location sent to backend:", {
-              latitude,
-              longitude,
-            });
-          } catch (error) {
-            console.error("Error sending user location to backend:", error);
-          }
+          // try {
+          //   await axios.post(`${BACKEND_URL}/user_location`, {
+          //     latitude,
+          //     longitude,
+          //   });
+          //   console.log("User location sent to backend:", {
+          //     latitude,
+          //     longitude,
+          //   });
+          // } catch (error) {
+          //   console.error("Error sending user location to backend:", error);
+          // }
         },
         (error) => console.error("Error getting location:", error)
       );
@@ -71,44 +74,39 @@ function App() {
     e.preventDefault();
 
     let startLocation = locationFormValues.start;
-    if (startLocation == "Your location") {
+    if (startLocation === "Your location") {
       startLocation = `${userLocation.latitude},${userLocation.longitude}`;
     }
     console.log("starting location is: ", startLocation);
 
     try {
-      // const distance = await calculateDistance(startLocation, locationFormValues.restaurant)
-      // setDistance(distance)
-      const response = await axios.post(`${BACKEND_URL}/get_distance`, {
-        user_location: startLocation,
-        restaurant_location: locationFormValues.restaurant,
-      });
-
-      await handleGetPostalCode();
-
-      console.log(restaurantLocation);
-      setDistance(response.data.distance_km);
+      const distance = await calculateDistance(
+        startLocation,
+        locationFormValues.restaurant
+      );
+      setDistance(distance);
     } catch (error) {
       console.error("Error getting distance:", error);
     }
   };
 
-  const handleGetPostalCode = async () => {
-    try {
-      const response = await axios.post(`${BACKEND_URL}/get_postal_code`, {
-        longitude: userLocation.longitude,
-        latitude: userLocation.latitude,
-      });
-      setPostalCode(response.data.postal_code);
-    } catch (error) {
-      console.error("Error getting postal code:", error);
-    }
-  };
-  const enterGasPrice = async (e) => {
-    e.preventDefault();
-    const manualGasPrice = Number(gasPriceFormValues.gas); // Ensure the value is a number
-    setGasPrice(manualGasPrice);
-  };
+  // const handleGetPostalCode = async () => {
+  //   try {
+  //     const response = await axios.post(`${BACKEND_URL}/get_postal_code`, {
+  //       longitude: userLocation.longitude,
+  //       latitude: userLocation.latitude,
+  //     });
+  //     setPostalCode(response.data.postal_code);
+  //   } catch (error) {
+  //     console.error("Error getting postal code:", error);
+  //   }
+  // };
+
+  // const enterGasPrice = async (e) => {
+  //   e.preventDefault();
+  //   const manualGasPrice = Number(gasPriceFormValues.gas); // Ensure the value is a number
+  //   setGasPrice(manualGasPrice);
+  // };
 
   const handleFuelConsumption = async (e) => {
     e.preventDefault();
@@ -203,17 +201,9 @@ function App() {
             ></CarForm>
           </section>
         )}
-        {fuelConsumption && (
-          <GasPriceForm
-            className="mb-8"
-            formValues={gasPriceFormValues}
-            handleChange={handleGasPriceFormChange}
-            fetchGasPrice={fetchGasPrice}
-            enterGasPrice={enterGasPrice}
-            gasPrice={gasPrice}
-          ></GasPriceForm>
-        )}
+        {fuelConsumption && <GasPriceForm className="mb-8" />}
 
+        {/* Refactor in own component */}
         {gasPrice && (
           <div className="mb-14">
             <p className="text-xl ">Data collected:</p>

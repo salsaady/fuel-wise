@@ -34,16 +34,6 @@ export default function FormContextProvider({ children }) {
   const [endLocation, setEndLocation] = useState(null);
   const [finalCost, setFinalCost] = useState(null);
 
-  const fetchGasPrice = async () => {
-    try {
-      const response = await axios.get(`${BACKEND_URL}/get_gas_price`);
-      setGasPrice(Number(response.data.gas_price));
-      console.log("Gas price: ", gasPrice);
-    } catch (error) {
-      console.error("Error getting gas price", error);
-    }
-  };
-
   const value = {
     distance,
     gasPrice,
@@ -54,7 +44,6 @@ export default function FormContextProvider({ children }) {
     finalCost,
     setDistance,
     setGasPrice,
-    fetchGasPrice,
     setVehicle,
     setFuelConsumption,
     setStartLocation,

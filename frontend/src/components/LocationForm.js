@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { LocateFixed, Circle, MapPin } from "lucide-react";
 import axios from "axios";
 import debounce from "lodash.debounce";
+import { useForm } from "../contexts/FormContext";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const LocationForm = ({
@@ -13,11 +14,14 @@ const LocationForm = ({
   const [startSuggestions, setStartSuggestions] = useState([]);
   const [restaurantSuggestions, setRestaurantSuggestions] = useState([]);
 
+  const { startLocation, endLocation, setStartLocation, setEndLocation } =
+    useForm();
+
   // Fetch suggestions based on input query
   const fetchSuggestions = async (query, setSuggestions) => {
     try {
       const response = await axios.get(`${BACKEND_URL}/autocomplete`, {
-        params: { input: query },
+        params: { input: query, startLocation: startLocation },
       });
       setSuggestions(response.data);
     } catch (error) {
@@ -43,6 +47,10 @@ const LocationForm = ({
     handleChange(e);
     debouncedFetchRestaurantSuggestions(e.target.value);
   };
+
+  function handleStartLocationChange(e) {
+    setStartLocation(e.target.value);
+  }
 
   return (
     <form
