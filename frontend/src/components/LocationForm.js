@@ -1,3 +1,11 @@
+/**
+ * LocationForm Component
+ *
+ * Renders a form for determining the route by letting the user enter a starting
+ * point and destination. It fetches autocomplete suggestions for both fields,
+ * updates local and global state, and calculates the trip distance on submission.
+ */
+
 import React, { useEffect, useState } from "react";
 import { LocateFixed, Circle, MapPin } from "lucide-react";
 import axios from "axios";
@@ -7,9 +15,11 @@ import { calculateDistance, getUserLocationString } from "../lib/utils";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const LocationForm = () => {
+  // Local state for autocomplete suggestions
   const [startSuggestions, setStartSuggestions] = useState([]);
   const [destinationSuggestions, setDestinationSuggestions] = useState([]);
 
+  // Access global state and setters from FormContext
   const {
     setDistance,
     startLocation,
@@ -18,17 +28,24 @@ const LocationForm = () => {
     setEndLocation,
   } = useForm();
 
+  // Local state for input values
   const [localValues, setLocalValues] = useState({
     start: "",
     destination: "",
   });
 
-  // 1. Fetch suggestions based on input query
+  /**
+   * Fetch autocomplete suggestions from the backend.
+   *
+   * @param {string} query - The user's input.
+   * @param {function} setSuggestions - Setter to update the suggestions state.
+   */
   const fetchSuggestions = async (query, setSuggestions) => {
     try {
       const response = await axios.get(`${BACKEND_URL}/autocomplete`, {
         params: {
           input: query,
+          // Pass current user location from context
           latitude: startLocation.latitude,
           longitude: startLocation.longitude,
         },
@@ -39,6 +56,7 @@ const LocationForm = () => {
     }
   };
 
+  // Debounced functions to limit API calls as the user types
   const debouncedFetchStartSuggestions = debounce((query) => {
     if (query) fetchSuggestions(query, setStartSuggestions);
   }, 300);
@@ -47,20 +65,26 @@ const LocationForm = () => {
     if (query) fetchSuggestions(query, setDestinationSuggestions);
   }, 300);
 
-  // 2. Update local input
+  // Update the start input and trigger suggestions fetch
   const handleStartChange = (e) => {
     const value = e.target.value;
     setLocalValues((prev) => ({ ...prev, start: value }));
     debouncedFetchStartSuggestions(value);
   };
 
+  // Update the destination input and trigger suggestions fetch
   const handleDestinationChange = (e) => {
     const value = e.target.value;
     setLocalValues((prev) => ({ ...prev, destination: value }));
     debouncedFetchDestinationSuggestions(value);
   };
 
-  // 3. When a suggestion is selected, update both local values and context.
+  /**
+   * Handle selection of a start suggestion.
+   * Updates both local input value and the global state.
+   *
+   * @param {string} value - The selected suggestion.
+   */
   const handleSelectStart = (value) => {
     setLocalValues((prev) => ({ ...prev, start: value }));
     // If the suggestion is "Your location," keep the geolocation context.
@@ -68,15 +92,29 @@ const LocationForm = () => {
     if (value !== "Your location") {
       setStartLocation({ description: value });
     }
-    setStartSuggestions([]);
+    setStartSuggestions([]); // Clear suggestions after selection
   };
+
+  /**
+   * Handle selection of a destination suggestion.
+   * Updates both local input value and the global state.
+   *
+   * @param {string} value - The selected suggestion.
+   */
   const handleSelectDestination = (value) => {
     setLocalValues((prev) => ({ ...prev, destination: value }));
     setEndLocation({ description: value });
-    setDestinationSuggestions([]);
+    setDestinationSuggestions([]); // Clear suggestions after selection
   };
 
-  // 4. Submit => calculate distance
+  /**
+   * Handles form submission by calculating the trip distance.
+   *
+   * Retrieves a unified user location string (custom or lat/lon)
+   * and uses it along with the destination input to calculate distance.
+   *
+   * @param {Event} e - Form submission event.
+   */
   async function handleSubmit(e) {
     e.preventDefault();
     if (!startLocation) return console.error("Start location not set");
@@ -138,6 +176,8 @@ const LocationForm = () => {
           </ul>
         )}
       </div>
+
+      {/* Destination Input */}
       <div className="relative ">
         <div className="flex justify-between">
           <label

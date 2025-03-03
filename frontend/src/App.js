@@ -1,3 +1,11 @@
+/**
+ * App.js
+ *
+ * Main component that orchestrates the multi-step Fuel Wise application.
+ * It retrieves the user's geolocation, manages the flow between different forms,
+ * and displays the final trip summary.
+ */
+
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "./App.css";
@@ -10,6 +18,7 @@ import { useForm } from "./contexts/FormContext";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 function App() {
+  // Retrieve shared state from FormContext
   const {
     distance,
     gasPrice,
@@ -23,7 +32,7 @@ function App() {
     setFinalCost,
   } = useForm();
 
-  // On mount, get user geolocation
+  // On mount, get user geolocation which is stored in the FormContext (startLocation)
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -37,12 +46,13 @@ function App() {
     }
   }, []);
 
-  // Control which forms are shown & scrolling
+  // Local states to control which forms are shown & scrolling
   const [showLocationForm, setShowLocationForm] = useState();
   const locationFormRef = useRef(null);
   const carFormRef = useRef(null);
   const gasPriceFormRef = useRef(null);
 
+  // Handler to show the LocationForm
   const handleSetShowLocationForm = () => {
     setShowLocationForm(true);
   };
@@ -68,6 +78,7 @@ function App() {
           Calculate the fuel cost of your journey quickly and easily. Enter your
           details, and let us do the rest!
         </p>
+        {/* Show a "Get started" button until the user initiates the process */}
         {!showLocationForm && (
           <button
             onClick={handleSetShowLocationForm}

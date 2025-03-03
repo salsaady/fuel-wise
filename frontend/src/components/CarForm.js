@@ -1,15 +1,25 @@
+/**
+ * CarForm Component
+ *
+ * Displays a multi-step form for selecting a vehicle's details (year, make, model).
+ * Fetches available years on mount, then makes and models based on user selections.
+ * On form submission, it retrieves and stores the vehicle's fuel consumption.
+ */
 import React, { useState, useEffect } from "react";
 import { useForm } from "../contexts/FormContext";
 import axios from "axios";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
-
 const CarForm = () => {
-  const {vehicle, setVehicle, setFuelConsumption} = useForm();
+  // Retrieve vehicle state and setter functions from context
+  const { vehicle, setVehicle, setFuelConsumption } = useForm();
+
+  // Local states for dropdown options
   const [years, setYears] = useState([]);
   const [makes, setMakes] = useState([]);
   const [models, setModels] = useState([]);
 
+  // Extract selected values from vehicle context (or default to empty string)
   const selectedYear = vehicle?.year || "";
   const selectedMake = vehicle?.make || "";
   const selectedModel = vehicle?.model || "";
@@ -32,7 +42,7 @@ const CarForm = () => {
   // 2. Fetch makes if a year is selected, every time selectedYear changes
   useEffect(() => {
     console.log(selectedYear);
-    if (selectedYear){
+    if (selectedYear) {
       const fetchMakes = async () => {
         try {
           console.log(selectedYear);
@@ -51,7 +61,7 @@ const CarForm = () => {
 
   // 3. Fetch models when a make is selected, every time selectedMake changes
   useEffect(() => {
-    if (selectedMake){
+    if (selectedMake) {
       const fetchModels = async () => {
         try {
           console.log(selectedMake);
@@ -69,14 +79,22 @@ const CarForm = () => {
       fetchModels();
     }
   }, [selectedMake, selectedYear]);
-  
-   // 4. Update vehicle state in context on dropdown change
-   const handleSelectChange = (e) => {
+
+  /**
+   * Updates the vehicle state in context when a dropdown value changes.
+   *
+   * @param {Event} e - The change event from a dropdown.
+   */
+  const handleSelectChange = (e) => {
     const { id, value } = e.target;
     setVehicle((prev) => ({ ...prev, [id]: value }));
   };
 
-  // 5. On submit => fetch fuel consumption
+  /**
+   * Handles form submission to fetch and store the fuel consumption.
+   *
+   * @param {Event} e - The form submission event.
+   */
   async function handleSubmit(e) {
     e.preventDefault();
     try {
@@ -85,6 +103,7 @@ const CarForm = () => {
         make: selectedMake,
         model: selectedModel,
       });
+      // Update context with the fetched fuel consumption value
       setFuelConsumption(response.data.fuel_consumption);
     } catch (error) {
       console.error("Error getting fuel consumption:", error);
