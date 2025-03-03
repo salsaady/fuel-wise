@@ -3,29 +3,26 @@ import { Navigation } from "lucide-react";
 import { useForm } from "../contexts/FormContext";
 import { getLiveGasPrice } from "../lib/utils";
 
-// const GasPriceForm = ({
-//   formValues,
-//   handleChange,
-//   fetchGasPrice,
-//   gasPrice,
-//   enterGasPrice,
-// }) => {
+
 const GasPriceForm = () => {
   const { startLocation, gasPrice, setGasPrice } = useForm();
-  console.log("STARTLOCATION: ", startLocation)
-  console.log("LONGITUDE: ",startLocation.longitude)
   async function handleUseCurrentLocationGasPrice() {
-    const locationGasPrice = await getLiveGasPrice(startLocation);
-    setGasPrice(locationGasPrice);
+  const locationGasPrice = await getLiveGasPrice(startLocation);
+  setGasPrice(locationGasPrice);
   }
-
+  
   function handleChangeGasPrice(e) {
     setGasPrice(e.target.valueAsNumber);
   }
 
+    // When user clicks Next, prevent page refresh
+    function handleSubmit(e) {
+      e.preventDefault();
+    }
+
   return (
     <form
-      // onSubmit={enterGasPrice}
+      onSubmit={handleSubmit}
       className="bg-white mb-14 w-96 p-6 px-10 rounded-lg shadow-lg mx-auto space-y-4"
     >
       <h3 className="mb-7">Determine gas price</h3>
@@ -53,10 +50,9 @@ const GasPriceForm = () => {
           className="gasFormInput"
           type="number"
           id="gas"
+          step="any"
           value={gasPrice}
           onChange={handleChangeGasPrice}
-          // value={formValues.gas || ""}
-          // onChange={handleChange}
         />
       </div>
 

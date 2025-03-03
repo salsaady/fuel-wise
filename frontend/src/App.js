@@ -1,44 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "./App.css";
-import CarForm from "./components/CarForm"; // Importing the CarForm component
+import CarForm from "./components/CarForm"; 
 import LocationForm from "./components/LocationForm";
 import GasPriceForm from "./components/GasPriceForm";
-import TestComponent from "./components/TestComponent";
 import { ArrowRight } from "lucide-react";
 import { useForm } from "./contexts/FormContext";
 import { calculateDistance } from "./lib/utils";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 function App() {
-  const [fuelConsumption, setFuelConsumption] = useState(null);
-  const [userLocation, setUserLocation] = useState(null); //replace with startLocation
-  //const [restaurantLocation, setRestaurantLocation] = useState(null); //replace with endLocation
-  //const [postalCode, setPostalCode] = useState(null);
-  const [carFormValues, setCarFormValues] = useState({}); //move to CarForm
-  const [locationFormValues, setLocationFormValues] = useState({}); //move to locationForm
-  // const [gasPriceFormValues, setGasPriceFormValues] = useState({});
-  const [costToDrive, setCostToDrive] = useState(null);
 
-  const { distance, gasPrice, setDistance, startLocation, setGasPrice, setStartLocation } =
+  const { distance, gasPrice, startLocation, fuelConsumption, finalCost, setDistance, setGasPrice, setStartLocation, setFuelConsumption, setFinalCost } =
     useForm();
-
-  const handleCarFormChange = (e) => {
-    setCarFormValues({ ...carFormValues, [e.target.id]: e.target.value });
-  };
-  const handleLocationFormChange = (e) => {
-    setLocationFormValues({
-      ...locationFormValues,
-      [e.target.id]: e.target.value,
-    });
-  };
-
-  // const handleGasPriceFormChange = (e) => {
-  //   setGasPriceFormValues({
-  //     ...gasPriceFormValues,
-  //     [e.target.id]: Number(e.target.value),
-  //   });
-  // };
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -46,8 +20,6 @@ function App() {
         async (position) => {
           const latitude = position.coords.latitude;
           const longitude = position.coords.longitude;
-          setUserLocation({ latitude, longitude });
-
           setStartLocation({ latitude, longitude });
 
           // Send user's location to the backend
@@ -78,10 +50,6 @@ function App() {
       return;
     }
 
-    // let startLocation = locationFormValues.start;
-    // if (startLocation === "Your location") {
-    //   startLocation = `${userLocation.latitude},${userLocation.longitude}`;
-    // }
     console.log("starting location is: ", startLocation);
     const destinationLocation = e.target.destination.value; 
 
@@ -95,24 +63,6 @@ function App() {
       console.error("Error getting distance:", error);
     }
   };
-
-  // const handleGetPostalCode = async () => {
-  //   try {
-  //     const response = await axios.post(`${BACKEND_URL}/get_postal_code`, {
-  //       longitude: userLocation.longitude,
-  //       latitude: userLocation.latitude,
-  //     });
-  //     setPostalCode(response.data.postal_code);
-  //   } catch (error) {
-  //     console.error("Error getting postal code:", error);
-  //   }
-  // };
-
-  // const enterGasPrice = async (e) => {
-  //   e.preventDefault();
-  //   const manualGasPrice = Number(gasPriceFormValues.gas); // Ensure the value is a number
-  //   setGasPrice(manualGasPrice);
-  // };
 
   const handleFuelConsumption = async (e) => {
     e.preventDefault();
@@ -139,8 +89,8 @@ function App() {
         fuelConsumption: fuelConsumption,
       });
       // Set the fuel consumption from the response
-      setCostToDrive(response.data.cost_to_drive);
-      console.log("this is the final cost", costToDrive);
+      setFinalCost(response.data.cost_to_drive);
+      console.log("this is the final cost", finalCost);
     } catch (error) {
       console.error("Error getting final cost", error);
     }
@@ -166,12 +116,6 @@ function App() {
       gasPriceFormRef.current.scrollIntoView();
     }
   }, [showLocationForm, distance, fuelConsumption]);
-
-  // const [currentStep, setCurrentStep] = useState(0);
-
-  // const handleNextStep = () => {
-  //   setCurrentStep((prev) => prev + 1);
-  // };
 
   return (
     <div className="min-h-screen bg-slate-50 App">
@@ -211,19 +155,15 @@ function App() {
             >
               Calculate cost for trip
             </button>
-            {costToDrive && (
+            {finalCost && (
               <span className="text-center text-2xl">
-                <p className="font-bold text-center">${costToDrive}</p>
+                <p className="font-bold text-center">${finalCost}</p>
                 <p className="text-xlg"></p>
               </span>
             )}
           </div>
         )}
       </div>
-
-      {/* {distance && <p>Distance: {distance} km</p>} */}
-
-      {/* {fuelConsumption && <p>Fuel consumption (combined): {fuelConsumption} L/100km</p>} */}
     </div>
   );
 }
