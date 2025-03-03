@@ -18,3 +18,16 @@ export async function getLiveGasPrice(location) {
 
   return Number(data.gas_price);
 }
+
+/**
+ * Convert the user's location object into a string
+ * (either "latitude,longitude" or the typed address).
+ */
+export function getUserLocationString(startLocation) {
+  if (startLocation.description) {
+    // The user typed a custom address
+    return startLocation.description;
+  }
+  // Otherwise, use lat/lon from geolocation
+  return `${startLocation.latitude},${startLocation.longitude}`;
+}

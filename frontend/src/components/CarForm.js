@@ -4,8 +4,8 @@ import axios from "axios";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 
-const CarForm = ({ handleFuelConsumption }) => {
-  const {vehicle, setVehicle} = useForm();
+const CarForm = () => {
+  const {vehicle, setVehicle, setFuelConsumption} = useForm();
   const [years, setYears] = useState([]);
   //onst [selectedYear, setSelectedYear] = useState("");
   const [makes, setMakes] = useState([]);
@@ -18,7 +18,7 @@ const CarForm = ({ handleFuelConsumption }) => {
   const selectedModel = vehicle?.model || "";
 
 
-  // Fetch available years once on mount
+  // 1. Fetch available years once on mount
   useEffect(
     () => {
       const fetchYears = async () => {
@@ -33,7 +33,7 @@ const CarForm = ({ handleFuelConsumption }) => {
     [selectedYear]
   );
 
-  // Fetch makes if a year is selected, every time selectedYear changes
+  // 2. Fetch makes if a year is selected, every time selectedYear changes
   useEffect(() => {
     console.log(selectedYear);
     if (selectedYear){
@@ -53,7 +53,7 @@ const CarForm = ({ handleFuelConsumption }) => {
     }
   }, [selectedYear]);
 
-  // Fetch models when a make is selected, every time selectedMake changes
+  // 3. Fetch models when a make is selected, every time selectedMake changes
   useEffect(() => {
     if (selectedMake){
       const fetchModels = async () => {
@@ -74,15 +74,30 @@ const CarForm = ({ handleFuelConsumption }) => {
     }
   }, [selectedMake, selectedYear]);
   
-   // Update vehicle state in context
+   // 4. Update vehicle state in context on dropdown change
    const handleSelectChange = (e) => {
     const { id, value } = e.target;
     setVehicle((prev) => ({ ...prev, [id]: value }));
   };
 
+  // 5. On submit => fetch fuel consumption
+  async function handleSubmit(e) {
+    e.preventDefault();
+    try {
+      const response = await axios.post(`${BACKEND_URL}/get_fuel_consumption`, {
+        year: selectedYear,
+        make: selectedMake,
+        model: selectedModel,
+      });
+      setFuelConsumption(response.data.fuel_consumption);
+    } catch (error) {
+      console.error("Error getting fuel consumption:", error);
+    }
+  }
+
   return (
     <form
-      onSubmit={handleFuelConsumption}
+      onSubmit={handleSubmit}
       className="bg-white mb-14 w-96 p-6 px-10 rounded-lg shadow-lg mx-auto space-y-4"
     >
       <h3 className="mb-7">Enter your vehicle details</h3>

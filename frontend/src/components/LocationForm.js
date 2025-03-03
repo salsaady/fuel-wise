@@ -3,20 +3,21 @@ import { LocateFixed, Circle, MapPin } from "lucide-react";
 import axios from "axios";
 import debounce from "lodash.debounce";
 import { useForm } from "../contexts/FormContext";
+import { calculateDistance, getUserLocationString } from "../lib/utils";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
-const LocationForm = ({ onNext, handleGetDistance }) => {
+const LocationForm = () => {
   const [startSuggestions, setStartSuggestions] = useState([]);
   const [destinationSuggestions, setDestinationSuggestions] = useState([]);
 
-  const { startLocation, endLocation, setStartLocation, setEndLocation } = useForm();
+  const { setDistance, startLocation, endLocation, setStartLocation, setEndLocation } = useForm();
   
   const [localValues, setLocalValues] = useState({
       start: "",
       destination: "",
     });
 
-  // Fetch suggestions based on input query
+  // 1. Fetch suggestions based on input query
   const fetchSuggestions = async (query, setSuggestions) => {
     try {
       const response = await axios.get(`${BACKEND_URL}/autocomplete`, {
@@ -28,7 +29,6 @@ const LocationForm = ({ onNext, handleGetDistance }) => {
     }
   };
 
-  // Debounced functions for each field
   const debouncedFetchStartSuggestions = debounce((query) => {
     if (query) fetchSuggestions(query, setStartSuggestions);
   }, 300);
@@ -37,6 +37,7 @@ const LocationForm = ({ onNext, handleGetDistance }) => {
     if (query) fetchSuggestions(query, setDestinationSuggestions);
   }, 300);
 
+  // 2. Update local input
   const handleStartChange = (e) => {
     const value = e.target.value;
     setLocalValues((prev) => ({ ...prev, start: value }));
@@ -48,11 +49,8 @@ const LocationForm = ({ onNext, handleGetDistance }) => {
     setLocalValues((prev) => ({ ...prev, destination: value }));
     debouncedFetchDestinationSuggestions(value);
   };
-  // function handleStartLocationChange(e) {
-  //   setStartLocation(e.target.value);
-  // }
-
-  // When a suggestion is selected, update both local values and context.
+  
+  // 3. When a suggestion is selected, update both local values and context.
   const handleSelectStart = (value) => {
     setLocalValues((prev) => ({ ...prev, start: value }));
     // If the suggestion is "Your location," keep the geolocation context.
@@ -62,16 +60,31 @@ const LocationForm = ({ onNext, handleGetDistance }) => {
     }
     setStartSuggestions([]);
   };
-
   const handleSelectDestination = (value) => {
     setLocalValues((prev) => ({ ...prev, destination: value }));
     setEndLocation({ description: value });
     setDestinationSuggestions([]);
   };
 
+  // 4. Submit => calculate distance
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (!startLocation) return console.error("Start location not set");
+
+    const userLocString = getUserLocationString(startLocation);
+    const dest = localValues.destination;
+    try {
+      const dist = await calculateDistance(userLocString, dest);
+      setDistance(dist);
+    } catch (error) {
+      console.error("Error getting distance:", error);
+    }
+  }
+
+
   return (
     <form
-      onSubmit={handleGetDistance}
+      onSubmit={handleSubmit}
       className="w-96 p-6 px-10 rounded-lg bg-white shadow-lg mx-auto space-y-4 mb-10"
     >
       {/* Start Location Input with Dropdown */}
@@ -151,7 +164,6 @@ const LocationForm = ({ onNext, handleGetDistance }) => {
         </div>
       </div>
       <button
-        onClick={onNext}
         type="submit"
         className="px-3 p-1 shadow-md hover:bg-sky-600/40 bg-sky-600/50 font-medium submit-btn"
       >
