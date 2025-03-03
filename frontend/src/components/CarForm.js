@@ -7,16 +7,12 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const CarForm = () => {
   const {vehicle, setVehicle, setFuelConsumption} = useForm();
   const [years, setYears] = useState([]);
-  //onst [selectedYear, setSelectedYear] = useState("");
   const [makes, setMakes] = useState([]);
-  //const [selectedMake, setSelectedMake] = useState("");
   const [models, setModels] = useState([]);
-  //const [selectedModel, setSelectedModel] = useState("");
 
   const selectedYear = vehicle?.year || "";
   const selectedMake = vehicle?.make || "";
   const selectedModel = vehicle?.model || "";
-
 
   // 1. Fetch available years once on mount
   useEffect(
@@ -123,13 +119,6 @@ const CarForm = () => {
             ))}
           </select>
         </div>
-        {/* <input
-          className="carFormInput shadow ml-4"
-          type="number"
-          id="year"
-          value={formValues.year || ""}
-          onChange={handleChange}
-        /> */}
       </div>
       {selectedYear && (
         <div className="flex justify-between items-center">
@@ -153,13 +142,6 @@ const CarForm = () => {
               ))}
             </select>
           </div>
-          {/* <input
-          className="carFormInput shadow ml-4"
-          type="text"
-          id="make"
-          value={formValues.make || ""}
-          onChange={handleChange}
-        /> */}
         </div>
       )}
       {selectedMake && (
@@ -184,13 +166,6 @@ const CarForm = () => {
               ))}
             </select>
           </div>
-          {/* <input
-          className="flex justify-end carFormInput shadow ml-2"
-          type="text"
-          id="model"
-          value={formValues.model || ""}
-          onChange={handleChange}
-        /> */}
         </div>
       )}
 

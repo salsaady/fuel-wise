@@ -13,12 +13,10 @@ app = Flask(__name__)
 CORS(app, origins=[os.getenv('FRONTEND_URL')])  # Enable CORS to allow requests from React
 
 @app.route('/check')
-#@cross_origin()
 def test():
     return jsonify({"message": "Hello World"})
 
 @app.route('/user_location', methods=['POST'])
-# @cross_origin()
 def receive_user_location():
     global user_location
     data = request.get_json()
@@ -32,12 +30,8 @@ def receive_user_location():
         return jsonify({"error": "Invalid location data"}), 400
     
 @app.route('/autocomplete', methods=['GET'])
-# @cross_origin()
 def autocomplete():
     input_text = request.args.get('input')
-    #user_location = request.args.get('user_location')
-    #user_location = request.args.get('start_location')
-
     if not input_text:
         return jsonify({"error": "No input provided"}), 400
     
@@ -50,7 +44,6 @@ def autocomplete():
         "types": ["geocode","establishment"],
         "location": location,
         "radius": 5000,
-        # "strictbounds": True,
         "locationbias": True,
     }
     
@@ -67,7 +60,6 @@ def autocomplete():
 ### Returns distance between the two locations, the user's location
 # and the restaurant locaton ###
 @app.route('/get_distance', methods=['POST'])
-# @cross_origin()  # Enable CORS for this specific route
 def get_distance():
     data = request.json
     user_location = data.get('user_location')
@@ -80,23 +72,7 @@ def get_distance():
         return jsonify({'error': str(e)}), 500
     
 
-# @app.route('/get_postal_code', methods=['POST'])
-# # @cross_origin()  # Enable CORS for this specific route
-# def get_postal_code():
-#     data = request.json
-#     startLocation = data.get('location')
-#     start_longitude = startLocation.longitude
-#     start_latitude = startLocation.latitude
-#     print(start_longitude, start_latitude)
-#     global postal_code
-#     try:
-#         postal_code = get_postal_code_data((start_latitude, start_longitude))
-#         return jsonify({'postal_code': postal_code}), 200
-#     except Exception as e:
-#         return jsonify({'error': str(e)}), 500
-
 @app.route('/get_fuel_consumption', methods=['POST'])
-# @cross_origin()
 def get_fuel_consumption():
     data = request.get_json()
     try:
@@ -107,7 +83,6 @@ def get_fuel_consumption():
 
 ### This is a GET route that returns gas price data. ###
 @app.route('/get_gas_price', methods=['POST'])
-# @cross_origin()
 def get_gas_price():
     body = request.get_json() 
     user_latitude = body.get('latitude')
@@ -120,7 +95,6 @@ def get_gas_price():
         return jsonify({'error': str(e)}), 500
 
 @app.route('/years', methods=['GET'])
-# @cross_origin()
 def get_model_years():
     years = []
     model_years_url = "https://www.fueleconomy.gov/ws/rest/vehicle/menu/year"
@@ -132,7 +106,6 @@ def get_model_years():
 
 
 @app.route('/makes', methods=['POST'])
-# @cross_origin()
 def get_vehicle_makes():
     data = request.get_json()
     year = data.get('year')
@@ -149,7 +122,6 @@ def get_vehicle_makes():
     return jsonify(makes)
 
 @app.route('/models', methods=['POST'])
-# @cross_origin()
 def get_vehicle_models():
     data = request.get_json()
     year = data.get('year')
@@ -172,7 +144,6 @@ def get_vehicle_models():
 # then calculate the driving cost and compare it to the delivery fee. 
 # It returns the calculated costs and a comparison result in JSON format. ###
 @app.route('/calculate_cost', methods=['POST'])
-# @cross_origin()  # Enable CORS for this specific route
 def calculate_cost():
     data = request.json
     result = calculate_cost_to_drive(data)
