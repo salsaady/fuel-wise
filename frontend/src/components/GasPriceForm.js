@@ -12,7 +12,8 @@ import { getLiveGasPrice } from "../lib/utils";
 // }) => {
 const GasPriceForm = () => {
   const { startLocation, gasPrice, setGasPrice } = useForm();
-
+  console.log("STARTLOCATION: ", startLocation)
+  console.log("LONGITUDE: ",startLocation.longitude)
   async function handleUseCurrentLocationGasPrice() {
     const locationGasPrice = await getLiveGasPrice(startLocation);
     setGasPrice(locationGasPrice);

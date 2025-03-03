@@ -21,7 +21,7 @@ const LocationForm = ({
   const fetchSuggestions = async (query, setSuggestions) => {
     try {
       const response = await axios.get(`${BACKEND_URL}/autocomplete`, {
-        params: { input: query, startLocation: startLocation },
+        params: { input: query },
       });
       setSuggestions(response.data);
     } catch (error) {

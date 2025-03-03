@@ -14,7 +14,7 @@ function App() {
   const [fuelConsumption, setFuelConsumption] = useState(null);
   const [userLocation, setUserLocation] = useState(null); //replace with startLocation
   const [restaurantLocation, setRestaurantLocation] = useState(null); //replace with endLocation
-  const [postalCode, setPostalCode] = useState(null);
+  //const [postalCode, setPostalCode] = useState(null);
   const [carFormValues, setCarFormValues] = useState({}); //move to CarForm
   const [locationFormValues, setLocationFormValues] = useState({}); //move to locationForm
   // const [gasPriceFormValues, setGasPriceFormValues] = useState({});
@@ -51,18 +51,18 @@ function App() {
           setStartLocation({ latitude, longitude });
 
           // Send user's location to the backend
-          // try {
-          //   await axios.post(`${BACKEND_URL}/user_location`, {
-          //     latitude,
-          //     longitude,
-          //   });
-          //   console.log("User location sent to backend:", {
-          //     latitude,
-          //     longitude,
-          //   });
-          // } catch (error) {
-          //   console.error("Error sending user location to backend:", error);
-          // }
+          try {
+            await axios.post(`${BACKEND_URL}/user_location`, {
+              latitude,
+              longitude,
+            });
+            console.log("User location sent to backend:", {
+              latitude,
+              longitude,
+            });
+          } catch (error) {
+            console.error("Error sending user location to backend:", error);
+          }
         },
         (error) => console.error("Error getting location:", error)
       );
@@ -202,8 +202,8 @@ function App() {
           </section>
         )}
         {fuelConsumption && <GasPriceForm className="mb-8" />}
-
-        {/* Refactor in own component */}
+        
+         {/* Refactor in own component */}
         {gasPrice && (
           <div className="mb-14">
             <p className="text-xl ">Data collected:</p>

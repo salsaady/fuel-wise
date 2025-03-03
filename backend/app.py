@@ -20,7 +20,7 @@ def test():
 @app.route('/user_location', methods=['POST'])
 # @cross_origin()
 def receive_user_location():
-    #global user_location
+    global user_location
     data = request.get_json()
     latitude = data.get('latitude')
     longitude = data.get('longitude')
@@ -34,11 +34,14 @@ def receive_user_location():
 @app.route('/autocomplete', methods=['GET'])
 # @cross_origin()
 def autocomplete():
-    input_text = request.args.get('input', 'startLocation')
+    input_text = request.args.get('input')
+    #user_location = request.args.get('user_location')
+    #user_location = request.args.get('start_location')
+
     if not input_text:
         return jsonify({"error": "No input provided"}), 400
     
-    location = f"{startLocation['latitude']},{user_location['longitude']}"
+    location = f"{user_location['latitude']},{user_location['longitude']}"
 
     url = "https://maps.googleapis.com/maps/api/place/autocomplete/json"
     params = {
@@ -77,19 +80,20 @@ def get_distance():
         return jsonify({'error': str(e)}), 500
     
 
-@app.route('/get_postal_code', methods=['POST'])
-# @cross_origin()  # Enable CORS for this specific route
-def get_postal_code():
-    data = request.json
-    user_longitude = data.get('longitude')
-    user_latitude = data.get('latitude')
-    print(user_longitude, user_latitude)
-    global postal_code
-    try:
-        postal_code = get_postal_code_data((user_latitude, user_longitude))
-        return jsonify({'postal_code': postal_code}), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+# @app.route('/get_postal_code', methods=['POST'])
+# # @cross_origin()  # Enable CORS for this specific route
+# def get_postal_code():
+#     data = request.json
+#     startLocation = data.get('location')
+#     start_longitude = startLocation.longitude
+#     start_latitude = startLocation.latitude
+#     print(start_longitude, start_latitude)
+#     global postal_code
+#     try:
+#         postal_code = get_postal_code_data((start_latitude, start_longitude))
+#         return jsonify({'postal_code': postal_code}), 200
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
 
 @app.route('/get_fuel_consumption', methods=['POST'])
 # @cross_origin()
@@ -102,14 +106,12 @@ def get_fuel_consumption():
         return jsonify({'error':str(e)}), 500
 
 ### This is a GET route that returns gas price data. ###
-@app.route('/get_gas_price', methods=['GET'])
+@app.route('/get_gas_price', methods=['POST'])
 # @cross_origin()
 def get_gas_price():
-    data = request.get_json() 
-
-    user_longitude = data.get('longitude')
-    user_latitude = data.get('latitude')
-    print(user_longitude, user_latitude)
+    body = request.get_json() 
+    user_latitude = body.get('latitude')
+    user_longitude = body.get('longitude')
     try:
         postal_code = get_postal_code_data((user_latitude, user_longitude))
         gas_price = get_gas_price_data(postal_code)

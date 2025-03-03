@@ -11,10 +11,9 @@ export async function calculateDistance(start, end) {
 }
 
 export async function getLiveGasPrice(location) {
-  const { data } = await axios.get(`${BACKEND_URL}/get_gas_price`, {
-    data: {
-      location: location,
-    },
+  const { data } = await axios.post(`${BACKEND_URL}/get_gas_price`, {
+      latitude: location.latitude,
+      longitude: location.longitude,
   });
 
   return Number(data.gas_price);
