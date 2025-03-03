@@ -58,14 +58,14 @@ def autocomplete():
 
 
 ### Returns distance between the two locations, the user's location
-# and the restaurant locaton ###
+# and the destination locaton ###
 @app.route('/get_distance', methods=['POST'])
 def get_distance():
     data = request.json
     user_location = data.get('user_location')
-    restaurant_location = data.get('restaurant_location')
+    dest_location = data.get('destination_location')
     try:
-        distance_km = get_distance_from_google_maps(user_location, restaurant_location)
+        distance_km = get_distance_from_google_maps(user_location, dest_location)
         return jsonify({'distance_km': distance_km}), 200
     
     except Exception as e:

@@ -10,10 +10,10 @@ load_dotenv()
 API_KEY = os.getenv('API_KEY')
 map_client = googlemaps.Client(API_KEY)
 
-def get_distance_from_google_maps(user_location, restaurant_location):
+def get_distance_from_google_maps(user_location, destination_location):
 
     # Call the Google Maps Distance Matrix API
-    response = map_client.distance_matrix(user_location, restaurant_location, mode="driving")
+    response = map_client.distance_matrix(user_location, destination_location, mode="driving")
 
     # Extract the distance in kilometers from the response
     if response['rows'][0]['elements'][0]['status'] == 'OK':
