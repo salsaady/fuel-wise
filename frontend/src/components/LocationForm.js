@@ -5,17 +5,16 @@ import debounce from "lodash.debounce";
 import { useForm } from "../contexts/FormContext";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
-const LocationForm = ({
-  onNext,
-  formValues,
-  handleChange,
-  handleGetDistance,
-}) => {
+const LocationForm = ({ onNext, handleGetDistance }) => {
   const [startSuggestions, setStartSuggestions] = useState([]);
-  const [restaurantSuggestions, setRestaurantSuggestions] = useState([]);
+  const [destinationSuggestions, setDestinationSuggestions] = useState([]);
 
-  const { startLocation, endLocation, setStartLocation, setEndLocation } =
-    useForm();
+  const { startLocation, endLocation, setStartLocation, setEndLocation } = useForm();
+  
+  const [localValues, setLocalValues] = useState({
+      start: "",
+      destination: "",
+    });
 
   // Fetch suggestions based on input query
   const fetchSuggestions = async (query, setSuggestions) => {
@@ -34,28 +33,46 @@ const LocationForm = ({
     if (query) fetchSuggestions(query, setStartSuggestions);
   }, 300);
 
-  const debouncedFetchRestaurantSuggestions = debounce((query) => {
-    if (query) fetchSuggestions(query, setRestaurantSuggestions);
+  const debouncedFetchDestinationSuggestions = debounce((query) => {
+    if (query) fetchSuggestions(query, setDestinationSuggestions);
   }, 300);
 
   const handleStartChange = (e) => {
-    handleChange(e);
-    debouncedFetchStartSuggestions(e.target.value);
+    const value = e.target.value;
+    setLocalValues((prev) => ({ ...prev, start: value }));
+    debouncedFetchStartSuggestions(value);
   };
 
-  const handleRestaurantChange = (e) => {
-    handleChange(e);
-    debouncedFetchRestaurantSuggestions(e.target.value);
+  const handleDestinationChange = (e) => {
+    const value = e.target.value;
+    setLocalValues((prev) => ({ ...prev, destination: value }));
+    debouncedFetchDestinationSuggestions(value);
+  };
+  // function handleStartLocationChange(e) {
+  //   setStartLocation(e.target.value);
+  // }
+
+  // When a suggestion is selected, update both local values and context.
+  const handleSelectStart = (value) => {
+    setLocalValues((prev) => ({ ...prev, start: value }));
+    // If the suggestion is "Your location," keep the geolocation context.
+    // Otherwise, update the start location with the chosen description.
+    if (value !== "Your location") {
+      setStartLocation({ description: value });
+    }
+    setStartSuggestions([]);
   };
 
-  function handleStartLocationChange(e) {
-    setStartLocation(e.target.value);
-  }
+  const handleSelectDestination = (value) => {
+    setLocalValues((prev) => ({ ...prev, destination: value }));
+    setEndLocation({ description: value });
+    setDestinationSuggestions([]);
+  };
 
   return (
     <form
       onSubmit={handleGetDistance}
-      className="w-96 p-6 px-10 rounded-lg bg-white shadow-lg mx-auto space-y-4"
+      className="w-96 p-6 px-10 rounded-lg bg-white shadow-lg mx-auto space-y-4 mb-10"
     >
       {/* Start Location Input with Dropdown */}
       <h3 className="">Determine your route</h3>
@@ -71,7 +88,7 @@ const LocationForm = ({
             type="text"
             id="start"
             placeholder="Choose starting point..."
-            value={formValues.start || ""}
+            value={localValues.start || ""}
             onChange={handleStartChange}
             autoComplete="off"
           />
@@ -80,15 +97,7 @@ const LocationForm = ({
           <ul className="text-sm absolute z-10 mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
             <li
               className="flex w-72 mr-4 items-center px-2 py-2 cursor-pointer hover:bg-gray-100"
-              onClick={() => {
-                handleChange({
-                  target: {
-                    id: "start",
-                    value: "Your location",
-                  },
-                });
-                setStartSuggestions([]);
-              }}
+              onClick={() => handleSelectStart("Your location")}
             >
               <LocateFixed className="mr-2 w-5 h-5 text-blue-600" />
               Your location
@@ -98,15 +107,7 @@ const LocationForm = ({
               <li
                 key={index}
                 className="flex items-center px-2 py-2 cursor-pointer hover:bg-gray-100"
-                onClick={() => {
-                  handleChange({
-                    target: {
-                      id: "start",
-                      value: suggestion.description,
-                    },
-                  });
-                  setStartSuggestions([]);
-                }}
+                onClick={() => handleSelectStart(suggestion.description)}
               >
                 <MapPin className="flex-shrink-0 flex-grow-0 mr-3 w-5 h-5 text-slate-600" />
                 {suggestion.description}
@@ -119,35 +120,27 @@ const LocationForm = ({
         <div className="flex justify-between">
           <label
             className="p-2 flex items-center formLabel"
-            htmlFor="restaurant"
+            htmlFor="destination"
           >
             <MapPin className="justify-center items-center size-5 text-red-600" />
           </label>
           <input
             className="formInput"
             type="text"
-            id="restaurant"
-            value={formValues.restaurant || ""}
-            onChange={handleRestaurantChange}
+            id="destination"
+            value={localValues.destination || ""}
+            onChange={handleDestinationChange}
             placeholder="Choose destination..."
             autoComplete="off"
           />
 
-          {restaurantSuggestions.length > 0 && (
+          {destinationSuggestions.length > 0 && (
             <ul className="text-sm w-auto absolute z-10 mt-10 bg-white border border-gray-300 rounded-md shadow-lg">
-              {restaurantSuggestions.map((suggestion, index) => (
+              {destinationSuggestions.map((suggestion, index) => (
                 <li
                   key={index}
                   className="flex  items-center px-2 py-2 cursor-pointer hover:bg-gray-100"
-                  onClick={() => {
-                    handleChange({
-                      target: {
-                        id: "restaurant",
-                        value: suggestion.description,
-                      },
-                    });
-                    setRestaurantSuggestions([]);
-                  }}
+                  onClick={()=>handleSelectDestination(suggestion.description)}
                 >
                   <MapPin className="flex-shrink-0 flex-grow-0 mr-3 w-5 h-5 text-slate-600" />
                   {suggestion.description}

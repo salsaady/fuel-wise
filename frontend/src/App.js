@@ -13,14 +13,14 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 function App() {
   const [fuelConsumption, setFuelConsumption] = useState(null);
   const [userLocation, setUserLocation] = useState(null); //replace with startLocation
-  const [restaurantLocation, setRestaurantLocation] = useState(null); //replace with endLocation
+  //const [restaurantLocation, setRestaurantLocation] = useState(null); //replace with endLocation
   //const [postalCode, setPostalCode] = useState(null);
   const [carFormValues, setCarFormValues] = useState({}); //move to CarForm
   const [locationFormValues, setLocationFormValues] = useState({}); //move to locationForm
   // const [gasPriceFormValues, setGasPriceFormValues] = useState({});
   const [costToDrive, setCostToDrive] = useState(null);
 
-  const { distance, gasPrice, setDistance, setGasPrice, setStartLocation } =
+  const { distance, gasPrice, setDistance, startLocation, setGasPrice, setStartLocation } =
     useForm();
 
   const handleCarFormChange = (e) => {
@@ -73,16 +73,22 @@ function App() {
   const handleGetDistance = async (e) => {
     e.preventDefault();
 
-    let startLocation = locationFormValues.start;
-    if (startLocation === "Your location") {
-      startLocation = `${userLocation.latitude},${userLocation.longitude}`;
+    if (!startLocation) {
+      console.error("Start location not set");
+      return;
     }
+
+    // let startLocation = locationFormValues.start;
+    // if (startLocation === "Your location") {
+    //   startLocation = `${userLocation.latitude},${userLocation.longitude}`;
+    // }
     console.log("starting location is: ", startLocation);
+    const destinationLocation = e.target.destination.value; 
 
     try {
       const distance = await calculateDistance(
-        startLocation,
-        locationFormValues.restaurant
+        `${startLocation.latitude},${startLocation.longitude}`,
+        destinationLocation
       );
       setDistance(distance);
     } catch (error) {
@@ -112,9 +118,9 @@ function App() {
     e.preventDefault();
     try {
       const response = await axios.post(`${BACKEND_URL}/get_fuel_consumption`, {
-        year: carFormValues.year,
-        make: carFormValues.make,
-        model: carFormValues.model,
+        year: e.target.year.value,
+        make: e.target.make.value,
+        model: e.target.model.value,
       });
       // Set the fuel consumption from the response
       setFuelConsumption(response.data.fuel_consumption);
@@ -123,6 +129,7 @@ function App() {
     }
   };
 
+  // Final cost calculation based on distance, gasPrice, and fuelConsumption
   const calculateCost = async (e) => {
     e.preventDefault();
     try {
@@ -147,6 +154,7 @@ function App() {
     setShowLocationForm(true);
   };
 
+  // Scroll to the next section once the corresponding data is set
   useEffect(() => {
     if (showLocationForm && locationFormRef.current) {
       locationFormRef.current.scrollIntoView();
@@ -159,11 +167,11 @@ function App() {
     }
   }, [showLocationForm, distance, fuelConsumption]);
 
-  const [currentStep, setCurrentStep] = useState(0);
+  // const [currentStep, setCurrentStep] = useState(0);
 
-  const handleNextStep = () => {
-    setCurrentStep((prev) => prev + 1);
-  };
+  // const handleNextStep = () => {
+  //   setCurrentStep((prev) => prev + 1);
+  // };
 
   return (
     <div className="min-h-screen bg-slate-50 App">
@@ -173,7 +181,6 @@ function App() {
           Calculate the fuel cost of your journey quickly and easily. Enter your
           details, and let us do the rest!
         </p>
-        <TestComponent />
         {!showLocationForm && (
           <button
             onClick={handleSetShowLocationForm}
@@ -183,24 +190,12 @@ function App() {
             <ArrowRight className="ml-2 transition-transform transform hover:translate-x-1"></ArrowRight>
           </button>
         )}
-        {showLocationForm && (
-          <section ref={locationFormRef} className="p-8 mt-4 scroll-mt-10">
-            <LocationForm
-              formValues={locationFormValues}
-              handleChange={handleLocationFormChange}
-              handleGetDistance={handleGetDistance}
-            />
-          </section>
-        )}
-        {distance && (
-          <section ref={carFormRef}>
+        {showLocationForm && <LocationForm
+              handleGetDistance={handleGetDistance}></LocationForm> }
+        {distance && 
             <CarForm
-              formValues={carFormValues}
-              handleChange={handleCarFormChange}
               handleFuelConsumption={handleFuelConsumption}
-            ></CarForm>
-          </section>
-        )}
+            ></CarForm>}
         {fuelConsumption && <GasPriceForm className="mb-8" />}
         
          {/* Refactor in own component */}

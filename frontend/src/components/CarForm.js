@@ -1,14 +1,24 @@
 import React, { useState, useEffect } from "react";
+import { useForm } from "../contexts/FormContext";
 import axios from "axios";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const CarForm = ({ formValues, handleChange, handleFuelConsumption }) => {
-  const [years, setYears] = useState([]);
-  const [selectedYear, setSelectedYear] = useState("");
-  const [makes, setMakes] = useState([]);
-  const [selectedMake, setSelectedMake] = useState("");
-  const [models, setModels] = useState([]);
-  const [selectedModel, setSelectedModel] = useState("");
 
+
+const CarForm = ({ handleFuelConsumption }) => {
+  const {vehicle, setVehicle} = useForm();
+  const [years, setYears] = useState([]);
+  //onst [selectedYear, setSelectedYear] = useState("");
+  const [makes, setMakes] = useState([]);
+  //const [selectedMake, setSelectedMake] = useState("");
+  const [models, setModels] = useState([]);
+  //const [selectedModel, setSelectedModel] = useState("");
+
+  const selectedYear = vehicle?.year || "";
+  const selectedMake = vehicle?.make || "";
+  const selectedModel = vehicle?.model || "";
+
+
+  // Fetch available years once on mount
   useEffect(
     () => {
       const fetchYears = async () => {
@@ -23,42 +33,52 @@ const CarForm = ({ formValues, handleChange, handleFuelConsumption }) => {
     [selectedYear]
   );
 
-  // Fetch makes whenever selectedYear changes
+  // Fetch makes if a year is selected, every time selectedYear changes
   useEffect(() => {
     console.log(selectedYear);
-
-    const fetchMakes = async () => {
-      try {
-        console.log(selectedYear);
-        const response = await axios.post(`${BACKEND_URL}/makes`, {
-          year: selectedYear,
-        });
-        console.log(response.data);
-        setMakes(response.data); // Assuming setMakes updates the dropdown options
-      } catch (error) {
-        console.error("Error fetching makes", error);
-      }
-    };
-    fetchMakes();
+    if (selectedYear){
+      const fetchMakes = async () => {
+        try {
+          console.log(selectedYear);
+          const response = await axios.post(`${BACKEND_URL}/makes`, {
+            year: selectedYear,
+          });
+          console.log(response.data);
+          setMakes(response.data); // Assuming setMakes updates the dropdown options
+        } catch (error) {
+          console.error("Error fetching makes", error);
+        }
+      };
+      fetchMakes();
+    }
   }, [selectedYear]);
 
+  // Fetch models when a make is selected, every time selectedMake changes
   useEffect(() => {
-    const fetchModels = async () => {
-      try {
-        console.log(selectedMake);
-        const response = await axios.post(`${BACKEND_URL}/models`, {
-          year: selectedYear,
-          make: selectedMake,
-        });
-        console.log(response.data);
-        setModels(response.data); // Assuming setMakes updates the dropdown options
-        // console.log(models);
-      } catch (error) {
-        console.error("Error fetching makes", error);
-      }
-    };
-    fetchModels();
-  }, [selectedMake]);
+    if (selectedMake){
+      const fetchModels = async () => {
+        try {
+          console.log(selectedMake);
+          const response = await axios.post(`${BACKEND_URL}/models`, {
+            year: selectedYear,
+            make: selectedMake,
+          });
+          console.log(response.data);
+          setModels(response.data); // Assuming setMakes updates the dropdown options
+          // console.log(models);
+        } catch (error) {
+          console.error("Error fetching makes", error);
+        }
+      };
+      fetchModels();
+    }
+  }, [selectedMake, selectedYear]);
+  
+   // Update vehicle state in context
+   const handleSelectChange = (e) => {
+    const { id, value } = e.target;
+    setVehicle((prev) => ({ ...prev, [id]: value }));
+  };
 
   return (
     <form
@@ -78,10 +98,7 @@ const CarForm = ({ formValues, handleChange, handleFuelConsumption }) => {
             className="carFormInput"
             type="number"
             value={selectedYear}
-            onChange={(e) => {
-              setSelectedYear(e.target.value);
-              handleChange(e);
-            }}
+            onChange={handleSelectChange}
           >
             <option value=""></option>
             {years.map((year, idx) => (
@@ -111,10 +128,7 @@ const CarForm = ({ formValues, handleChange, handleFuelConsumption }) => {
               className="carFormInput "
               type="text"
               value={selectedMake}
-              onChange={(e) => {
-                setSelectedMake(e.target.value);
-                handleChange(e);
-              }}
+              onChange={handleSelectChange}
             >
               <option value=""></option>
               {makes.map((make, idx) => (
@@ -145,10 +159,7 @@ const CarForm = ({ formValues, handleChange, handleFuelConsumption }) => {
               className="carFormInput"
               type="text"
               value={selectedModel}
-              onChange={(e) => {
-                setSelectedModel(e.target.value);
-                handleChange(e);
-              }}
+              onChange={handleSelectChange}
             >
               <option value=""></option>
               {models.map((model, idx) => (
