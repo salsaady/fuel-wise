@@ -2,6 +2,9 @@
 
 A web application that calculates the cost of driving to a location. The app calculates the driving cost based on the distance between the user's location and the destination, fuel consumption of the user's car, and the current gas price, then calculates the cost to drive.
 
+## Live Demo
+Checkout the live application here: https://fuelwise.vercel.app/
+
 ## Features
 
 - **Distance Calculation**: Calculates the driving distance between the user’s location and a specified destination.
