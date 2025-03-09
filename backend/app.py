@@ -15,8 +15,6 @@ from flask_cors import CORS, cross_origin
 from services import *
 from utils import calculate_cost_to_drive, convert_mpg_to_l_100km
 import os
-from dotenv import load_dotenv
-load_dotenv()
 
 app = Flask(__name__)
 CORS(app, origins=[os.getenv('FRONTEND_URL')])  # Enable CORS to allow requests from React

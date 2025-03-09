@@ -10,8 +10,6 @@ import googlemaps
 import requests
 import xml.etree.ElementTree as ET
 import os
-from dotenv import load_dotenv
-load_dotenv()
 
 # Initialize the Google Maps client with the API key
 API_KEY = os.getenv('API_KEY')
