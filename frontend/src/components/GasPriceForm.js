@@ -48,7 +48,7 @@ const GasPriceForm = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white mb-14 w-96 p-6 px-10 rounded-lg shadow-lg mx-auto space-y-4"
+      className="bg-white mb-20 w-96 p-6 px-10 rounded-lg shadow-lg mx-auto space-y-4"
     >
       <h3 className="mb-7">Determine gas price</h3>
 

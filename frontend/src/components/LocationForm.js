@@ -12,21 +12,16 @@ import axios from "axios";
 import debounce from "lodash.debounce";
 import { useForm } from "../contexts/FormContext";
 import { calculateDistance, getUserLocationString } from "../lib/utils";
+import { Loader2Icon } from "lucide-react";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const LocationForm = () => {
   // Local state for autocomplete suggestions
   const [startSuggestions, setStartSuggestions] = useState([]);
   const [destinationSuggestions, setDestinationSuggestions] = useState([]);
-
   // Access global state and setters from FormContext
-  const {
-    setDistance,
-    startLocation,
-    endLocation,
-    setStartLocation,
-    setEndLocation,
-  } = useForm();
+  const { setDistance, startLocation, setStartLocation, setEndLocation } =
+    useForm();
 
   // Local state for input values
   const [localValues, setLocalValues] = useState({
@@ -122,6 +117,7 @@ const LocationForm = () => {
    */
   async function handleSubmit(e) {
     e.preventDefault();
+
     if (!startLocation) return console.error("Start location not set");
 
     const userLocString = getUserLocationString(startLocation);
@@ -165,6 +161,7 @@ const LocationForm = () => {
             </div>
           </label>
           <input
+            ref={formRef}
             className="formInput"
             type="text"
             id="start"
@@ -197,11 +194,9 @@ const LocationForm = () => {
           </ul>
         )}
       </div>
-
       <div className="flex pl-1.5 flex-col ">
         <EllipsisVertical></EllipsisVertical>
       </div>
-
       {/* Destination Input */}
       <div className="relative ">
         <div className="flex pb-4 justify-between">
@@ -222,7 +217,7 @@ const LocationForm = () => {
           />
 
           {destinationSuggestions.length > 0 && (
-            <ul className="w-full text-sm absolute z-10 mt-10 bg-white border border-gray-300 rounded-md shadow-lg">
+            <ul className="w-full text-sm absolute z-10 mt-11  bg-white border border-gray-300 rounded-md shadow-lg">
               {destinationSuggestions.map((suggestion, index) => (
                 <li
                   key={index}

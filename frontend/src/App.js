@@ -7,7 +7,6 @@
  */
 
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
 import "./App.css";
 import CarForm from "./components/CarForm";
 import LocationForm from "./components/LocationForm";
@@ -15,22 +14,11 @@ import GasPriceForm from "./components/GasPriceForm";
 import TripSummary from "./components/TripSummary";
 import { ArrowRight } from "lucide-react";
 import { useForm } from "./contexts/FormContext";
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 function App() {
   // Retrieve shared state from FormContext
-  const {
-    distance,
-    gasPrice,
-    startLocation,
-    fuelConsumption,
-    finalCost,
-    setDistance,
-    setGasPrice,
-    setStartLocation,
-    setFuelConsumption,
-    setFinalCost,
-  } = useForm();
+  const { distance, gasPrice, fuelConsumption, finalCost, setStartLocation } =
+    useForm();
 
   // On mount, get user geolocation which is stored in the FormContext (startLocation)
   useEffect(() => {
@@ -60,18 +48,18 @@ function App() {
   // Scroll to the next section once the corresponding data is set
   useEffect(() => {
     if (showLocationForm && locationFormRef.current) {
-      locationFormRef.current.scrollIntoView();
+      locationFormRef.current.scrollIntoView({ behavior: "smooth" });
     }
     if (distance && carFormRef.current) {
-      carFormRef.current.scrollIntoView();
+      carFormRef.current.scrollIntoView({ behavior: "smooth" });
     }
     if (fuelConsumption && gasPriceFormRef.current) {
-      gasPriceFormRef.current.scrollIntoView();
+      gasPriceFormRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [showLocationForm, distance, fuelConsumption]);
 
   return (
-    <div className="min-h-screen bg-slate-50 App">
+    <div className="min-h-screen bg-slate-100 pb-80 App">
       <div className="flex flex-col items-center justify-center">
         <h1 className="mt-36 text-3xl font-semibold">Welcome to Fuel Wise!</h1>
         <p className="m-4 px-6 max-w-xl">
@@ -88,9 +76,25 @@ function App() {
             <ArrowRight className="ml-2 transition-transform transform hover:translate-x-1"></ArrowRight>
           </button>
         )}
-        {showLocationForm && <LocationForm />}
-        {distance && <CarForm />}
-        {fuelConsumption && <GasPriceForm className="mb-8" />}
+        {showLocationForm && (
+          <section ref={locationFormRef} className="w-full mt-10">
+            <LocationForm />
+          </section>
+        )}
+
+        {/* Step 2: Car Form */}
+        {distance && (
+          <section ref={carFormRef} className="w-full mt-10">
+            <CarForm />
+          </section>
+        )}
+
+        {/* Step 3: Gas Price Form */}
+        {fuelConsumption && (
+          <section ref={gasPriceFormRef} className="w-full mt-10">
+            <GasPriceForm className="mb-8" />
+          </section>
+        )}
         {gasPrice && (
           <TripSummary
             distance={distance}

@@ -113,7 +113,7 @@ const CarForm = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white mb-14 w-96 p-6 px-10 rounded-lg shadow-lg mx-auto space-y-4"
+      className="bg-white mb-10 w-96 p-6 px-10 rounded-lg shadow-lg mx-auto space-y-4"
     >
       <h3 className="mb-7">Enter your vehicle details</h3>
       <div className="flex justify-between items-center">
