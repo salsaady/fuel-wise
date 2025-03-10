@@ -22,6 +22,10 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app, origins=[os.getenv('FRONTEND_URL')])  # Enable CORS to allow requests from React
 
+@app.route("/")
+def index():
+    return "Welcome to my FuelWise server!"
+
 @app.route('/autocomplete', methods=['GET'])
 def autocomplete():
     """
