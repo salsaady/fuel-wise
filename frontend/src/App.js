@@ -39,6 +39,7 @@ function App() {
   const locationFormRef = useRef(null);
   const carFormRef = useRef(null);
   const gasPriceFormRef = useRef(null);
+  const tripSummaryRef = useRef(null);
 
   // Handler to show the LocationForm
   const handleSetShowLocationForm = () => {
@@ -56,7 +57,10 @@ function App() {
     if (fuelConsumption && gasPriceFormRef.current) {
       gasPriceFormRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [showLocationForm, distance, fuelConsumption]);
+    if (gasPrice && tripSummaryRef.current) {
+      tripSummaryRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [showLocationForm, distance, fuelConsumption, gasPrice]);
 
   return (
     <div className="min-h-screen bg-slate-100 pb-80 App">
@@ -96,12 +100,14 @@ function App() {
           </section>
         )}
         {gasPrice && (
-          <TripSummary
-            distance={distance}
-            gasPrice={gasPrice}
-            fuelConsumption={fuelConsumption}
-            finalCost={finalCost}
-          />
+          <section ref={tripSummaryRef} className="w-full mt-10">
+            <TripSummary
+              distance={distance}
+              gasPrice={gasPrice}
+              fuelConsumption={fuelConsumption}
+              finalCost={finalCost}
+            />
+          </section>
         )}
       </div>
     </div>

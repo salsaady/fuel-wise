@@ -36,20 +36,8 @@ const GasPriceForm = () => {
     setGasPrice(e.target.valueAsNumber);
   }
 
-  /**
-   * Prevents default form submission behavior.
-   *
-   * @param {Event} e - The form submission event.
-   */
-  function handleSubmit(e) {
-    e.preventDefault();
-  }
-
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white mb-20 w-96 p-6 px-10 rounded-lg shadow-lg mx-auto space-y-4"
-    >
+    <form className="bg-white mb-20 w-96 p-6 px-10 rounded-lg shadow-lg mx-auto space-y-4">
       <h3 className="mb-7">Determine gas price</h3>
 
       {/* Button to fetch live gas price based on user's start location */}
@@ -82,14 +70,6 @@ const GasPriceForm = () => {
           onChange={handleChangeGasPrice}
         />
       </div>
-
-      {/* Next button prevents form submission and triggers next step */}
-      <button
-        type="submit"
-        className="px-3 p-1 shadow-md hover:bg-sky-600/40 bg-sky-600/50 font-medium submit-btn"
-      >
-        Next
-      </button>
     </form>
   );
 };
