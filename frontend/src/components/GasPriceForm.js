@@ -37,7 +37,7 @@ const GasPriceForm = () => {
   }
 
   return (
-    <form className="bg-white mb-20 w-96 p-6 px-10 rounded-lg shadow-lg mx-auto space-y-4">
+    <form className="bg-white mb-10 w-96 p-6 px-10 rounded-lg shadow-lg mx-auto space-y-4">
       <h3 className="mb-7">Determine gas price</h3>
 
       {/* Button to fetch live gas price based on user's start location */}

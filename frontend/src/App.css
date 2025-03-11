@@ -29,6 +29,7 @@ body {
 }
 
 form {
+  width: 24rem;
 }
 
 h3 {
@@ -41,6 +42,15 @@ h3 {
   background-color: rgb(255 255 255 / 0.8);
   width: 265px;
   height: 40px;
+  padding-left: 0.5rem /* 8px */;
+  border-width: thin;
+  border-color: black;
+}
+.carFormCustomInput {
+  border-radius: 0.375rem /* 6px */;
+  background-color: rgb(255 255 255 / 0.8);
+  width: 120px;
+  height: 35px;
   padding-left: 0.5rem /* 8px */;
   border-width: thin;
   border-color: black;

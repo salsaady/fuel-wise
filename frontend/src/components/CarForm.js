@@ -19,6 +19,9 @@ const CarForm = () => {
   const [makes, setMakes] = useState([]);
   const [models, setModels] = useState([]);
 
+  // Local state for custom fuel consumption input
+  const [customFuelConsumption, setCustomFuelConsumption] = useState("");
+
   // Extract selected values from vehicle context (or default to empty string)
   const selectedYear = vehicle?.year || "";
   const selectedMake = vehicle?.make || "";
@@ -97,6 +100,12 @@ const CarForm = () => {
    */
   async function handleSubmit(e) {
     e.preventDefault();
+    // Use custom fuel consumption if provided
+    if (customFuelConsumption.trim()) {
+      setFuelConsumption(Number(customFuelConsumption));
+      return;
+    }
+    // Otherwise, fetch fuel consumption based on vehicle details
     try {
       const response = await axios.post(`${BACKEND_URL}/get_fuel_consumption`, {
         year: selectedYear,
@@ -113,9 +122,25 @@ const CarForm = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white mb-10 w-96 p-6 px-10 rounded-lg shadow-lg mx-auto space-y-4"
+      className="bg-white mb-10 p-6 px-10 rounded-lg shadow-lg mx-auto space-y-4"
     >
-      <h3 className="mb-7">Enter your vehicle details</h3>
+      <h3 className="">Determine your fuel consumption</h3>
+      <div className="flex justify-between items-center">
+        <p className="font-medium">Enter value: </p>
+        <div className="flex justify-center">
+          <input
+            type="number"
+            className="carFormCustomInput text-center"
+            value={customFuelConsumption}
+            onChange={(e) => setCustomFuelConsumption(e.target.value)}
+          />
+        </div>
+        <p>(L/100km)</p>
+      </div>
+
+      <h3 className="">or </h3>
+
+      <h3 className="">Enter your vehicle details</h3>
       <div className="flex justify-between items-center">
         <label className="formLabel" htmlFor="year">
           Year:{" "}
